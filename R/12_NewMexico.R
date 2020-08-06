@@ -65,25 +65,34 @@ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 estrace <- read_csv("NewMexico_Race.csv")
 dat <- read_dta("new mexico voter file 2017.dta")
 
+# TEMPOLARITY (DON'T KNOW IF THIS IS THE RIGHT WAY)
+dat.s <- dat %>% filter(voting_method_pr2016!=""&
+                        voting_method_pr2012!="")
+
 dat2 <- dat %>% mutate(voterID = text_registrant_id,
                        female =  ifelse(cde_gender=="F",1,0),
                        democrat = ifelse(desc_party=="DEMOCRAT",1,0),
                        birthyear = date_of_birth,
                        R_date = mdy(date_of_registration),
                        Reg_bf16 = ifelse(R_date <= mdy(11082016),1,0),
+                       Reg_in16 = ifelse(voting_method_pr2016!="",1,0),
                        Reg_in12 = ifelse(voting_method_pr2012!="",1,0),
-                       population = ifelse(Reg_bf16==1 & Reg_in12==1,1,0),
-                       voted2016 = ifelse(voting_method_pr2016!="" &      # DOUBLE CHECK THIS 8/6/20
-                                          voting_method_pr2016!="N",1,0),
-                       voted2012 = ifelse(voting_method_pr2012!="" &      # DOUBLE CHECK THIS 8/6/20
-                                          voting_method_pr2012!="N",1,0), 
-                       voted2010 = ifelse(voting_method_pr2010!="" &      # DOUBLE CHECK THIS 8/6/20
-                                          voting_method_pr2010!="N",1,0),                        
+                       population = ifelse(Reg_bf16==1 & Reg_in16 & Reg_in12==1,1,0),
+                       voted2016 = ifelse(voting_method_pr2016 %in% c("E", "A", "N", "P", "Y"),1,0),
+                       voted2012 = ifelse(voting_method_pr2012 %in% c("E", "A", "N", "P", "Y"),1,0),    # DOUBLE CHECK THIS 8/6/20
+                       voted2010 = ifelse(voting_method_pr2010 %in% c("E", "A", "N", "P", "Y"),1,0),     # DOUBLE CHECK THIS 8/6/20
                        State = "New Mexico") %>% 
-       left_join(estrace, by="voterID") %>% 
-       filter(population==1) %>% # ONLY KEEP THOSE WHO REGISTERED BTW 2012-2016
-       mutate(estrace = est.race, VoterID = voterID) %>%
-       dplyr::select(VoterID, voted2010, voted2012, voted2016, female, democrat, estrace, State, birthyear)
+       left_join(estrace, by="voterID") 
+
+# CHECK THE CODING OF THE POPULATION OF INTEREST
+# check <- dat2 %>%
+#          dplyr::select(population, R_date, Reg_bf16, Reg_in16, Reg_in12,
+#                       voting_method_pr2016, voting_method_pr2012)
+
+dat2 <- dat2 %>%
+        filter(population==1) %>% # ONLY KEEP THOSE WHO REGISTERED BTW 2012-2016
+        mutate(estrace = est.race, VoterID = voterID) %>%
+        dplyr::select(VoterID, voted2010, voted2012, voted2016, female, democrat, estrace, State, birthyear)
 
 
 nm12 <- dat2 %>% mutate(Vote = voted2012, age = 2012 - birthyear, Year=2012) %>%
