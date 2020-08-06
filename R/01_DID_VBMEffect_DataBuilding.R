@@ -165,7 +165,6 @@ write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2016.csv")
 # MAIN POPULATION OF INTEREST
 rm(list=ls())
 library(tidyverse)
-library(magrittr)
 stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
 stack_nm <- read_csv("Stack_NM_2012_2016.csv")       # 1616984
 
