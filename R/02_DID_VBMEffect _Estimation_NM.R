@@ -8,36 +8,36 @@
 
 ##################################################s##############################################
 # (1) SIMPLE RANDOM SAMPLING
-# rm(list=ls())
-# library(tidyverse)
-
-# IDENTIFICATINO FOR voted2010 variable
+#  rm(list=ls())
+#  library(tidyverse)
+# 
+# #IDENTIFICATINO FOR voted2010 variable
 # dat <- read_csv("Stack_Colorado_NM_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 # dat <- dat %>%
 #          dplyr::select(-n) %>%
 #          filter(is.na(female)==F & is.na(democrat)==F &
 #                 is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
-#  
+# 
 #  dat %>% filter(State=="Colorado") %>% dim()
-#  dat %>% filter(State!="Colorado") %>% dim() 
+#  dat %>% filter(State!="Colorado") %>% dim()
 #  dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
-#  dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim() 
+#  dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim()
 # 
 # # IMPUTED 8/6/2020
 #  m <- glm(voted2010 ~ female+democrat+age+estrace+State, family=binomial,dat)
 #  pred.val <- predict(m, dat[,c(2,3,4,5,6)], type="response")
 #  pred_voted2010 <- ifelse(pred.val >=0.5, 1,0)
-#  
+# 
 #  dat.imp  <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, pred_voted2010))
 #  dat.imp2 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 0)) # Lowest Value
 #  dat.imp3 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 1)) # Highest Value
-#  
-#  mean(dat.imp$voted2010==dat.imp2$voted2010) # 0.6168234
-#  mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.9560095
-#  mean(dat.imp$voted2010) #[1] 0.6790157
-#  mean(dat.imp2$voted2010) #[1] 0.2958391
-#  mean(dat.imp3$voted2010) #[1] 0.7230062
-#  
+# 
+#  mean(dat.imp$voted2010==dat.imp2$voted2010) # 0.6197329
+#  mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.9494335
+#  mean(dat.imp$voted2010) #[1] 0.8303127
+#  mean(dat.imp2$voted2010) #[1] 0.4500456
+#  mean(dat.imp3$voted2010) #[1] 0.8808792
+# 
 #  write_csv(dat.imp, "Stack_Colorado_NM_2012_2016_imputed.csv")
 #  write_csv(dat.imp2, "Stack_Colorado_NM_2012_2016_imputed_Low.csv")
 #  write_csv(dat.imp3, "Stack_Colorado_NM_2012_2016_imputed_Up.csv")
@@ -90,7 +90,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% filter(estrace=="Black") %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.01*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.005*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
@@ -122,7 +122,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% filter(estrace=="Asian") %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.005*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.004*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
