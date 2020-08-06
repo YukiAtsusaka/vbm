@@ -167,12 +167,12 @@ rm(list=ls())
 library(tidyverse)
 library(magrittr)
 stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
-stack_nm <- read_csv("Stack_NM_2012_2016.csv")       # 2592344
+stack_nm <- read_csv("Stack_NM_2012_2016.csv")       # 1616984
 
 stack_co_nm <- union_all(stack_co, stack_nm) %>%
                mutate(Time = ifelse(Year==2016, 1, 0),
                       Place = ifelse(State=="Colorado", 1,0),
-                      Intervent = Time*Place) # 7086696
+                      Intervent = Time*Place) # 6111336
 
 write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2016.csv")
 #########################################################################################################
