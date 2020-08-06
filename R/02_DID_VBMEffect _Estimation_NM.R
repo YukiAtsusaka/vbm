@@ -1,5 +1,5 @@
 ################################################################################################
-# DID_BVMEffect_Estimation.R
+# DID_BVMEffect_Estimation_NM.R
 # Created by Yuki Atsusaka
 # Since 8/27/2019
 # Last updated 8/6/2020
@@ -12,19 +12,18 @@ rm(list=ls())
 library(tidyverse)
 
 # # IDENTIFICATINO FOR voted2010 variable
- dat <- read_csv("Stack_Colorado_NC_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
- dat <- dat %>%
-         dplyr::select(-n) %>%
-         filter(is.na(female)==F & is.na(democrat)==F &
-                is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
+ # dat <- read_csv("Stack_Colorado_NM_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+ # dat <- dat %>%
+ #         dplyr::select(-n) %>%
+ #         filter(is.na(female)==F & is.na(democrat)==F &
+ #                is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
+ # 
+# datCO <- dat %>% filter(State=="Colorado") %>% dim()
+# datNM <- dat %>% filter(State!="Colorado") %>% dim() 
+# datCO.m <- dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
+# datNM.m <- dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim() 
 
-datCO <- dat %>% filter(State=="Colorado") %>% dim()
-datNC <- dat %>% filter(State!="Colorado") %>% dim() 
-datCO.m <- dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
-datNC.m <- dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim() 
-
-
-# 
+# IMPUTED 8/6/2020
 # m <- glm(voted2010 ~ female+democrat+age+estrace+State, family=binomial,dat)
 # pred.val <- predict(m, dat[,c(2,3,4,5,6)], type="response")
 # pred_voted2010 <- ifelse(pred.val >=0.5, 1,0)
@@ -33,21 +32,21 @@ datNC.m <- dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim()
 # dat.imp2 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 0)) # Lowest Value
 # dat.imp3 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 1)) # Highest Value
 # 
-# mean(dat.imp$voted2010==dat.imp2$voted2010) # 0.8515118
-# mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.991069
-# mean(dat.imp$voted2010) #[1] 0.5470006
-# mean(dat.imp2$voted2010) #[1] 0.3985124
-# mean(dat.imp3$voted2010) #[1] 0.5559316
+# mean(dat.imp$voted2010==dat.imp2$voted2010) # 0.6833248
+# mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.9483002
+# mean(dat.imp$voted2010) #[1] 0.5724968
+# mean(dat.imp2$voted2010) #[1] 0.2558216
+# mean(dat.imp3$voted2010) #[1] 0.6241967
 # 
-# write_csv(dat.imp, "Stack_Colorado_NC_2012_2016_imputed.csv")
-# write_csv(dat.imp2, "Stack_Colorado_NC_2012_2016_imputed_Low.csv")
-# write_csv(dat.imp3, "Stack_Colorado_NC_2012_2016_imputed_Up.csv")
+# write_csv(dat.imp, "Stack_Colorado_NM_2012_2016_imputed.csv")
+# write_csv(dat.imp2, "Stack_Colorado_NM_2012_2016_imputed_Low.csv")
+# write_csv(dat.imp3, "Stack_Colorado_NM_2012_2016_imputed_Up.csv")
 
 
-dat <- read_csv("Stack_Colorado_NC_2012_2016_imputed_Low.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+dat <- read_csv("Stack_Colorado_NM_2012_2016_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
 datCO <- dat %>% filter(Place==1)
-datNC <- dat %>% filter(Place==0)
+datNM <- dat %>% filter(Place==0)
 
 # SIMPLE RANDOM SAMPLING (All Voters) ==================================================#
 set.seed(1029501)
