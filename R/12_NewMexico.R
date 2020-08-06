@@ -59,11 +59,12 @@ rm(list=ls())
 library(tidyverse)
 library(haven)
 library(lubridate)
+setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
+
 
 estrace <- read_csv("NewMexico_Race.csv")
 dat <- read_dta("new mexico voter file 2017.dta")
 
-# ONLY KEEP THOSE WHO REGISTERED BTW 2012-2016
 dat2 <- dat %>% mutate(voterID = text_registrant_id,
                        female =  ifelse(cde_gender=="F",1,0),
                        democrat = ifelse(desc_party=="DEMOCRAT",1,0),
@@ -80,6 +81,7 @@ dat2 <- dat %>% mutate(voterID = text_registrant_id,
                                           voting_method_pr2010!="N",1,0),                        
                        State = "New Mexico") %>% 
        left_join(estrace, by="voterID") %>% 
+       filter(population==1) %>% # ONLY KEEP THOSE WHO REGISTERED BTW 2012-2016
        mutate(estrace = est.race, VoterID = voterID) %>%
        dplyr::select(VoterID, voted2010, voted2012, voted2016, female, democrat, estrace, State, birthyear)
 
