@@ -76,19 +76,22 @@ dat2 <- dat %>% mutate(voterID = text_registrant_id,
                                           voting_method_pr2016!="N",1,0),
                        voted2012 = ifelse(voting_method_pr2012!="" &      # DOUBLE CHECK THIS 8/6/20
                                           voting_method_pr2012!="N",1,0), 
+                       voted2010 = ifelse(voting_method_pr2010!="" &      # DOUBLE CHECK THIS 8/6/20
+                                          voting_method_pr2010!="N",1,0),                        
                        State = "New Mexico") %>% 
        left_join(estrace, by="voterID") %>% 
-       mutate(estrace = est.race) %>%
-       dplyr::select(voterID, voted2012, voted2016, female, democrat, estrace, State, birthyear)
+       mutate(estrace = est.race, VoterID = voterID) %>%
+       dplyr::select(VoterID, voted2010, voted2012, voted2016, female, democrat, estrace, State, birthyear)
 
 
 nm12 <- dat2 %>% mutate(Vote = voted2012, age = 2012 - birthyear, Year=2012) %>%
-               dplyr:: select(voterID, female, democrat, age, estrace, State, Vote)
+               dplyr:: select(VoterID, female, democrat, age, estrace, State, Vote, Year, voted2010)
   
-nm16 <- dat2 %>% mutate(Vote = voted2016, age = 2016 - birthyear, Year=16) %>%
-               dplyr:: select(voterID, female, democrat, age, estrace, State, Vote)
+nm16 <- dat2 %>% mutate(Vote = voted2016, age = 2016 - birthyear, Year=2016) %>%
+               dplyr:: select(VoterID, female, democrat, age, estrace, State, Vote, Year, voted2010)
   
 nm12_16 <- rbind(nm12,nm16)
+
 write_csv(nm12_16, "Stack_NM_2012_2016.csv")
 
 
