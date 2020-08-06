@@ -78,9 +78,9 @@ dat2 <- dat %>% mutate(voterID = text_registrant_id,
                        Reg_in16 = ifelse(voting_method_pr2016!="",1,0),
                        Reg_in12 = ifelse(voting_method_pr2012!="",1,0),
                        population = ifelse(Reg_bf16==1 & Reg_in16 & Reg_in12==1,1,0),
-                       voted2016 = ifelse(voting_method_pr2016 %in% c("E", "A", "N", "P", "Y"),1,0),
-                       voted2012 = ifelse(voting_method_pr2012 %in% c("E", "A", "N", "P", "Y"),1,0),    # DOUBLE CHECK THIS 8/6/20
-                       voted2010 = ifelse(voting_method_pr2010 %in% c("E", "A", "N", "P", "Y"),1,0),     # DOUBLE CHECK THIS 8/6/20
+                       voted2016 = ifelse(voting_method_pr2016 %in% c("E", "A", "P"),1,0),
+                       voted2012 = ifelse(voting_method_pr2012 %in% c("E", "A", "P"),1,0),    # DOUBLE CHECK THIS 8/6/20
+                       voted2010 = ifelse(voting_method_pr2010 %in% c("E", "A", "P"),1,0),     # DOUBLE CHECK THIS 8/6/20
                        State = "New Mexico") %>% 
        left_join(estrace, by="voterID") 
 
