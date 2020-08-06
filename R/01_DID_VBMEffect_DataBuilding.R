@@ -140,7 +140,7 @@ write_csv(co12_16, "Stack_Colorado_2012_2016_expanded.csv")
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-# STACKING TREATMENT AND CONTROL STATES
+# STACKING TREATMENT AND CONTROL STATES (I)
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 # MAIN POPULATION OF INTEREST
 rm(list=ls())
@@ -157,25 +157,52 @@ stack_co_nc <- union_all(stack_co, stack_nc) %>%
                       Intervent = Time*Place) # 18367514
 
 write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2016.csv")
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+# STACKING TREATMENT AND CONTROL STATES (II) 8/6/2020
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+# MAIN POPULATION OF INTEREST
+rm(list=ls())
+library(tidyverse)
+library(magrittr)
+stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
+stack_nm <- read_csv("Stack_NM_2012_2016.csv")       # 12089156
+stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
+
+stack_co_nm <- union_all(stack_co, stack_nm) %>%
+               mutate(Time = ifelse(Year==2016, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 18367514
+
+write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2016.csv")
+
+
 #########################################################################################################
 
 
 
-# SIDE-POPULATION OF INTEREST
-rm(list=ls())
-library(tidyverse)
-library(magrittr)
-stack_co <- read_csv("Stack_Colorado_2012_2016_expanded.csv")
-stack_nc <- read_csv("Stack_NC_2012_2016_expanded.csv")
-stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
-stack_co <- stack_co %>% mutate(voted2012 = NA, voted2010 = NA)
 
-stack_co_nc <- union_all(stack_co, stack_nc) %>%
-  mutate(Time = ifelse(Year==2016, 1, 0),
-         Place = ifelse(State=="Colorado", 1,0),
-         Intervent = Time*Place) # 18367514
 
-write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2016_expanded.csv")
+
+
+
+
+# # SIDE-POPULATION OF INTEREST
+# rm(list=ls())
+# library(tidyverse)
+# library(magrittr)
+# stack_co <- read_csv("Stack_Colorado_2012_2016_expanded.csv")
+# stack_nc <- read_csv("Stack_NC_2012_2016_expanded.csv")
+# stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
+# stack_co <- stack_co %>% mutate(voted2012 = NA, voted2010 = NA)
+# 
+# stack_co_nc <- union_all(stack_co, stack_nc) %>%
+#   mutate(Time = ifelse(Year==2016, 1, 0),
+#          Place = ifelse(State=="Colorado", 1,0),
+#          Intervent = Time*Place) # 18367514
+# 
+# write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2016_expanded.csv")
 #########################################################################################################
 
 
