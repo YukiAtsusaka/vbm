@@ -8,40 +8,42 @@
 
 ##################################################s##############################################
 # (1) SIMPLE RANDOM SAMPLING
+# rm(list=ls())
+# library(tidyverse)
+
+# IDENTIFICATINO FOR voted2010 variable
+# dat <- read_csv("Stack_Colorado_NM_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+# dat <- dat %>%
+#          dplyr::select(-n) %>%
+#          filter(is.na(female)==F & is.na(democrat)==F &
+#                 is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
+#  
+#  dat %>% filter(State=="Colorado") %>% dim()
+#  dat %>% filter(State!="Colorado") %>% dim() 
+#  dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
+#  dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim() 
+# 
+# # IMPUTED 8/6/2020
+#  m <- glm(voted2010 ~ female+democrat+age+estrace+State, family=binomial,dat)
+#  pred.val <- predict(m, dat[,c(2,3,4,5,6)], type="response")
+#  pred_voted2010 <- ifelse(pred.val >=0.5, 1,0)
+#  
+#  dat.imp  <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, pred_voted2010))
+#  dat.imp2 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 0)) # Lowest Value
+#  dat.imp3 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 1)) # Highest Value
+#  
+#  mean(dat.imp$voted2010==dat.imp2$voted2010) # 0.6168234
+#  mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.9560095
+#  mean(dat.imp$voted2010) #[1] 0.6790157
+#  mean(dat.imp2$voted2010) #[1] 0.2958391
+#  mean(dat.imp3$voted2010) #[1] 0.7230062
+#  
+#  write_csv(dat.imp, "Stack_Colorado_NM_2012_2016_imputed.csv")
+#  write_csv(dat.imp2, "Stack_Colorado_NM_2012_2016_imputed_Low.csv")
+#  write_csv(dat.imp3, "Stack_Colorado_NM_2012_2016_imputed_Up.csv")
+
 rm(list=ls())
 library(tidyverse)
-
-# # IDENTIFICATINO FOR voted2010 variable
- # dat <- read_csv("Stack_Colorado_NM_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
- # dat <- dat %>%
- #         dplyr::select(-n) %>%
- #         filter(is.na(female)==F & is.na(democrat)==F &
- #                is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
- # 
-# datCO <- dat %>% filter(State=="Colorado") %>% dim()
-# datNM <- dat %>% filter(State!="Colorado") %>% dim() 
-# datCO.m <- dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
-# datNM.m <- dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim() 
-
-# IMPUTED 8/6/2020
-# m <- glm(voted2010 ~ female+democrat+age+estrace+State, family=binomial,dat)
-# pred.val <- predict(m, dat[,c(2,3,4,5,6)], type="response")
-# pred_voted2010 <- ifelse(pred.val >=0.5, 1,0)
-# 
-# dat.imp  <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, pred_voted2010))
-# dat.imp2 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 0)) # Lowest Value
-# dat.imp3 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 1)) # Highest Value
-# 
-# mean(dat.imp$voted2010==dat.imp2$voted2010) # 0.6833248
-# mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.9483002
-# mean(dat.imp$voted2010) #[1] 0.5724968
-# mean(dat.imp2$voted2010) #[1] 0.2558216
-# mean(dat.imp3$voted2010) #[1] 0.6241967
-# 
-# write_csv(dat.imp, "Stack_Colorado_NM_2012_2016_imputed.csv")
-# write_csv(dat.imp2, "Stack_Colorado_NM_2012_2016_imputed_Low.csv")
-# write_csv(dat.imp3, "Stack_Colorado_NM_2012_2016_imputed_Up.csv")
-
 
 dat <- read_csv("Stack_Colorado_NM_2012_2016_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
@@ -289,12 +291,9 @@ library(MatchIt)
 library(Hmisc)
 rm(list=ls())
 
-# TEMPOARILY
-dat_s <- read_csv("Stack_Colorado_NM_2012_2016_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
-
 
 # CURRENTLY BASED ON IMPUTATION "PRED"
-dat_s <- read_csv("Stack_Colorado_NM_2012_2016_Sample_AgeHigh.csv",     
+dat_s <- read_csv("Stack_Colorado_NM_2012_2016_Sample_Frequent.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE
