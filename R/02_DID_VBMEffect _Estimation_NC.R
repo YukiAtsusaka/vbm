@@ -43,8 +43,16 @@
 # write_csv(dat.imp2, "Stack_Colorado_NC_2012_2016_imputed_Low.csv")
 # write_csv(dat.imp3, "Stack_Colorado_NC_2012_2016_imputed_Up.csv")
 
+# 8/10 Found an error fix the followin
+# Effects by Age Logit  --> OK
+# Effects by Age Low
+# Effects by Age High
+# Effects by Party Logit
+# Effects by Party Low
+# Effects by Party High
 
-dat <- read_csv("Stack_Colorado_NC_2012_2016_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+rm(list=ls())
+dat <- read_csv("Stack_Colorado_NC_2012_2016_imputed_Up.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
 datCO <- dat %>% filter(Place==1)
 datNC <- dat %>% filter(Place==0)
@@ -288,9 +296,10 @@ library(ebal)
 library(cobalt)
 library(MatchIt)
 library(Hmisc)
+
 rm(list=ls())
-# CURRENTLY BASED ON IMPUTATINO "LOGIT" 8/10/2020
-dat_s <- read_csv("Stack_Colorado_NC_2012_2016_Sample_AgeHigh.csv",     
+# CURRENTLY BASED ON IMPUTATINO "HIGH" 8/10/2020
+dat_s <- read_csv("Stack_Colorado_NC_2012_2016_Sample_Republican.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE
