@@ -46,7 +46,7 @@ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 rm(list=ls())
 library(tidyverse)
 
-dat <- read_csv("Stack_Colorado_NM_2012_2016_imputed_Low.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+dat <- read_csv("Stack_Colorado_NM_2012_2016_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
 datCO <- dat %>% filter(Place==1)
 datNM <- dat %>% filter(Place==0)
@@ -293,8 +293,8 @@ library(Hmisc)
 rm(list=ls())
 
 
-# CURRENTLY BASED ON IMPUTATION "LOW" 8/10
-dat_s <- read_csv("Stack_Colorado_NM_2012_2016_Sample.csv",     
+# CURRENTLY BASED ON IMPUTATION "LOGIT"/10
+dat_s <- read_csv("Stack_Colorado_NM_2012_2016_Sample_Infrequent.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE
@@ -332,22 +332,22 @@ love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), thr
 # (3) TWO-YEAR PRE-STRATIFIED AND PREPROCESSED DATA
 
 # ALL
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age,match.dat, weights=weights))#$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age,match.dat, weights=weights))$coef[2,1:2]
 
 # Frequent and Infrequent
-summary(lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))#$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
 
 # White, Black, Hispanic, Asian
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))#$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
 
 # Male, Female
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(democrat)+age, match.dat, weights=weights))#$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
 
 # Dem, non-Dem
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+age, match.dat, weights=weights))#$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+age, match.dat, weights=weights))$coef[2,1:2]
 
 # Age Low, Mid, High
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))#$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
 
 
 
