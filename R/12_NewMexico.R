@@ -65,6 +65,7 @@ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 estrace <- read_csv("NewMexico_Race.csv")
 dat <- read_dta("new mexico voter file 2017.dta")
 
+
 # TEMPOLARITY (DON'T KNOW IF THIS IS THE RIGHT WAY)
 dat.s <- dat %>% filter(voting_method_pr2016!=""&
                         voting_method_pr2012!="")
@@ -75,12 +76,12 @@ dat2 <- dat %>% mutate(voterID = text_registrant_id,
                        birthyear = date_of_birth,
                        R_date = mdy(date_of_registration),
                        Reg_bf16 = ifelse(R_date <= mdy(11082016),1,0),
-                       Reg_in16 = ifelse(voting_method_pr2016!="",1,0),
-                       Reg_in12 = ifelse(voting_method_pr2012!="",1,0),
+                       Reg_in16 = ifelse(voting_method_gn2016!="",1,0),
+                       Reg_in12 = ifelse(voting_method_gn2012!="",1,0),
                        population = ifelse(Reg_bf16==1 & Reg_in16 & Reg_in12==1,1,0),
-                       voted2016 = ifelse(voting_method_pr2016 %in% c("E", "A", "P"),1,0),
-                       voted2012 = ifelse(voting_method_pr2012 %in% c("E", "A", "P"),1,0),    # DOUBLE CHECK THIS 8/6/20
-                       voted2010 = ifelse(voting_method_pr2010 %in% c("E", "A", "P"),1,0),     # DOUBLE CHECK THIS 8/6/20
+                       voted2016 = ifelse(voting_method_gn2016 %in% c("E", "A", "P"),1,0),
+                       voted2012 = ifelse(voting_method_gn2012 %in% c("E", "A", "P"),1,0),    # DOUBLE CHECK THIS 8/6/20
+                       voted2010 = ifelse(voting_method_gn2010 %in% c("E", "A", "P"),1,0),     # DOUBLE CHECK THIS 8/6/20
                        State = "New Mexico") %>% 
        left_join(estrace, by="voterID") 
 
