@@ -17,9 +17,27 @@
 # READING RAW DATA
 rm(list=ls())
 library(tidyverse)
-library(magrittr)
+library(lubridate)
 nc2012 <- read_csv("2012 North Carolina CSV.csv") 
 nc2016 <- read_csv("2016 North Carolina CSV.csv")
+
+
+#TEMPOLARILY 8/11/2020
+R_length_NC = nc2012 %>% dplyr::select(registr_dt) %>%
+              mutate(R_length = mdy(11082016) - mdy(registr_dt),
+                     R_length = as.numeric(R_length)) %>%
+              filter(R_length < 36500) %>%
+              dplyr::select(R_length) %>% pull()
+
+par(mfrow=c(1,1))
+hist(R_length_NC/365, main="Years of Registration (North Carolina)", breaks=80)
+abline(v=1, col="firebrick4", lwd=2)
+abline(v=3, col="navy", lwd=2)
+abline(v=5, col="black", lwd=2)
+abline(v=10, col="black", lwd=2)
+abline(v=20, col="black", lwd=2)
+
+
 
 # KEEP ONLY NECESSARY VARIABLES
 nc2012_sl <- nc2012 %>%
@@ -59,7 +77,6 @@ write_csv(nc12_16, "Stack_NC_2012_2016_expanded.csv")
 rm(list=ls()); gc(); gc()
 library(haven)
 library(tidyverse)
-library(magrittr)
 
 #co2012 <- read_dta("Colo 2012 voted.dta") # 3738665
 #co2012 <- co2012 %>% distinct(voter_id, .keep_all=T) # 3642765   # Drop duplicates [A LOT, needs check]
@@ -122,21 +139,21 @@ write_csv(co12_16, "Stack_Colorado_2012_2016.csv")
 
 
 
-# FOR THE EXPANDED POPULATION
-co12_16 <- co2012_sl %>%
-  full_join(co2016_sl, by="VoterID") %>%
-  mutate(State = "Colorado") %>%         # 3214220 obs
-  gather(Vote.x, Vote.y, key="Merge", value="Vote") %>%
-  arrange(VoterID) %>%
-  mutate(Year = ifelse(Merge=="Vote.x", 2012, 2016),
-         age = ifelse(Year==2016, age+4, age)) %>%
-  rename(estrace = estrace.x, female = gender) %>% # CHECK IF GENDER==FEMALE IN RAW DATA
-  dplyr::select(-c(voterd_2016, Merge)) %>%
-  filter(is.na(Vote)==F) %>% # Drop missing obs with Vote
-  filter(is.na(female)==F & is.na(democrat)==F & is.na(age)==F & is.na(estrace)==F)
-#  add_count(VoterID) 
-#  filter(n==2)  # NOT DROP VOTERS WHO ARE REGISTERED ONLY IN EITHER ELECTION
-write_csv(co12_16, "Stack_Colorado_2012_2016_expanded.csv")
+# # FOR THE EXPANDED POPULATION
+# co12_16 <- co2012_sl %>%
+#   full_join(co2016_sl, by="VoterID") %>%
+#   mutate(State = "Colorado") %>%         # 3214220 obs
+#   gather(Vote.x, Vote.y, key="Merge", value="Vote") %>%
+#   arrange(VoterID) %>%
+#   mutate(Year = ifelse(Merge=="Vote.x", 2012, 2016),
+#          age = ifelse(Year==2016, age+4, age)) %>%
+#   rename(estrace = estrace.x, female = gender) %>% # CHECK IF GENDER==FEMALE IN RAW DATA
+#   dplyr::select(-c(voterd_2016, Merge)) %>%
+#   filter(is.na(Vote)==F) %>% # Drop missing obs with Vote
+#   filter(is.na(female)==F & is.na(democrat)==F & is.na(age)==F & is.na(estrace)==F)
+# #  add_count(VoterID) 
+# #  filter(n==2)  # NOT DROP VOTERS WHO ARE REGISTERED ONLY IN EITHER ELECTION
+# write_csv(co12_16, "Stack_Colorado_2012_2016_expanded.csv")
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
