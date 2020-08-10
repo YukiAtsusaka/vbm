@@ -76,6 +76,9 @@ dat2 <- dat %>% mutate(voterID = text_registrant_id,
                        democrat = ifelse(desc_party=="DEMOCRAT",1,0),
                        birthyear = date_of_birth,
                        R_date = mdy(date_of_registration),
+                       R_length = mdy(11082016) - 
+                                  mdy(date_of_registration), 
+                       R_length = as.numeric(R_length),
                        Reg_bf16 = ifelse(R_date <= mdy(11082016),1,0),
                        Reg_in16 = ifelse(voting_method_gn2016!="",1,0),
                        Reg_in12 = ifelse(voting_method_gn2012!="",1,0),
@@ -92,19 +95,26 @@ dat2 <- dat %>% mutate(voterID = text_registrant_id,
 #          dplyr::select(population, R_date, Reg_bf16, Reg_in16, Reg_in12,
 #                       voting_method_pr2016, voting_method_pr2012)
 
-dat2 <- dat2 %>%
+dat3 <- dat2 %>%
         filter(population==1) %>% # ONLY KEEP THOSE WHO REGISTERED BTW 2012-2016
         mutate(estrace = est.race, VoterID = voterID) %>%
-        dplyr::select(VoterID, voted2010, voted2012, voted2014, voted2016, female, democrat, estrace, State, birthyear)
+        filter(R_length < 36500) %>% # Registered less than 100 years
+        dplyr::select(VoterID, voted2010, voted2012, voted2014, voted2016, female, democrat, estrace, State, birthyear, R_length)
+
+hist(dat3$R_length/365, main="Years of Registration (New Mexico)", breaks=80)
+abline(v=1, col="firebrick4", lwd=2)
+abline(v=3, col="navy", lwd=2)
+abline(v=5, col="black", lwd=2)
+abline(v=10, col="black", lwd=2)
+abline(v=20, col="black", lwd=2)
 
 
-nm12 <- dat2 %>% mutate(Vote = voted2012, age = 2012 - birthyear, Year=2012) %>%
+nm12 <- dat3 %>% mutate(Vote = voted2012, age = 2012 - birthyear, Year=2012) %>%
+               dplyr:: select(VoterID, female, democrat, age, estrace, State, Vote, Year, voted2010)
+nm14 <- dat3 %>% mutate(Vote = voted2014, age = 2014 - birthyear, Year=2014) %>%
                dplyr:: select(VoterID, female, democrat, age, estrace, State, Vote, Year, voted2010)
 
-nm14 <- dat2 %>% mutate(Vote = voted2014, age = 2014 - birthyear, Year=2014) %>%
-               dplyr:: select(VoterID, female, democrat, age, estrace, State, Vote, Year, voted2010)
-
-nm16 <- dat2 %>% mutate(Vote = voted2016, age = 2016 - birthyear, Year=2016) %>%
+nm16 <- dat3 %>% mutate(Vote = voted2016, age = 2016 - birthyear, Year=2016) %>%
                dplyr:: select(VoterID, female, democrat, age, estrace, State, Vote, Year, voted2010)
   
 nm12_16 <- rbind(nm12,nm16)
