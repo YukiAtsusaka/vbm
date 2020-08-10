@@ -8,21 +8,21 @@
 
 ################################################################################################
 # (1) SIMPLE RANDOM SAMPLING
-rm(list=ls())
-library(tidyverse)
-
+# rm(list=ls())
+# library(tidyverse)
+# 
 # # IDENTIFICATINO FOR voted2010 variable
- dat <- read_csv("Stack_Colorado_NC_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
- dat <- dat %>%
-         dplyr::select(-n) %>%
-         filter(is.na(female)==F & is.na(democrat)==F &
-                is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
-
-datCO <- dat %>% filter(State=="Colorado") %>% dim()
-datNC <- dat %>% filter(State!="Colorado") %>% dim() 
-datCO.m <- dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
-datNC.m <- dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim() 
-
+#  dat <- read_csv("Stack_Colorado_NC_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+#  dat <- dat %>%
+#          dplyr::select(-n) %>%
+#          filter(is.na(female)==F & is.na(democrat)==F &
+#                 is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
+# 
+# datCO <- dat %>% filter(State=="Colorado") %>% dim()
+# datNC <- dat %>% filter(State!="Colorado") %>% dim() 
+# datCO.m <- dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
+# datNC.m <- dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim() 
+# 
 
 # 
 # m <- glm(voted2010 ~ female+democrat+age+estrace+State, family=binomial,dat)
@@ -44,7 +44,7 @@ datNC.m <- dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim()
 # write_csv(dat.imp3, "Stack_Colorado_NC_2012_2016_imputed_Up.csv")
 
 
-dat <- read_csv("Stack_Colorado_NC_2012_2016_imputed_Low.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+dat <- read_csv("Stack_Colorado_NC_2012_2016_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
 datCO <- dat %>% filter(Place==1)
 datNC <- dat %>% filter(Place==0)
@@ -289,8 +289,8 @@ library(cobalt)
 library(MatchIt)
 library(Hmisc)
 rm(list=ls())
-# CURRENTLY BASED ON IMPUTATINO "LOW"
-dat_s <- read_csv("Stack_Colorado_NC_2012_2016_Sample.csv",     
+# CURRENTLY BASED ON IMPUTATINO "LOGIT" 8/10/2020
+dat_s <- read_csv("Stack_Colorado_NC_2012_2016_Sample_AgeHigh.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE
