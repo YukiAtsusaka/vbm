@@ -15,6 +15,9 @@ library(tidyverse)
 library("ggsci")
 rm(list=ls())
 
+pdf("CATTPlot.pdf", width=10, height=7)
+par(mar=c(1,3,1,1), mfrow=c(2,1))
+
 # Compute group proportions
 # dat <- read_csv("Stack_Colorado_NC_2012_2016_imputed.csv", col_types = cols(VoterID = col_character())) 
 # datCO <- dat %>% filter(Place==1); rm(dat)
@@ -44,9 +47,7 @@ ratio <- 100/(14)
 cole <- "firebrick4"
 pal <- pal_jco()(10)
 
-pdf("CATTPlot.pdf", width=10, height=7*0.65)
 
-par(mar=c(1,3,1,1))
 plot(y ~ x, type="n", xlab="", ylab="", xaxt="n")
 #abline(h=att[1], lty=1, col="firebrick4")
 
@@ -73,6 +74,7 @@ for(i in 2:14){ arrows(y0=att[i]-1.96*se[i], y1=att[i]+1.96*se[i],
                        x0=ratio*i, x1=ratio*i, length=0, angle=0, col=cole, lwd=4)}
 for(i in 2:14){ points(ratio*i, att[i], pch=1, cex=5*prop[i], col="navy") }
 
+text(x=ratio*0.5,y=0.12, labels="North Carolina as Control", font=2)
 text(x=ratio*0.5,y=att[1]-0.01, labels="All Voter", font=2)
 text(x=ratio*2, y=att[2]+0.01, labels="Frequent Voter", font=2)
 text(x=ratio*3, y=att[3]+0.01, labels="Infrequent Voter", font=2)
@@ -88,17 +90,11 @@ text(x=ratio*12, y=att[12]+0.01, labels="U35", font=2)
 text(x=ratio*13, y=att[13]+0.01, labels="35-65", font=2)
 text(x=ratio*14, y=att[14]+0.01, labels="O65", font=2)
 
-dev.off()
-
-
 
 ################################################################################################
 # (2) NEW MEXICO CONTROLS
 ################################################################################################
 
-library(tidyverse)
-library("ggsci")
-rm(list=ls())
 
 # Compute group proportions
 # dat <- read_csv("Stack_Colorado_NC_2012_2016_imputed.csv", col_types = cols(VoterID = col_character()))
@@ -129,9 +125,7 @@ ratio <- 100/(14)
 cole <- "firebrick4"
 pal <- pal_jco()(10)
 
-pdf("CATTPlot2.pdf", width=10, height=7*0.65)
 
-par(mar=c(1,3,1,1))
 plot(y ~ x, type="n", xlab="", ylab="", xaxt="n")
 #abline(h=att[1], lty=1, col="firebrick4")
 
@@ -158,6 +152,7 @@ for(i in 2:14){ arrows(y0=att[i]-1.96*se[i], y1=att[i]+1.96*se[i],
                        x0=ratio*i, x1=ratio*i, length=0, angle=0, col=cole, lwd=4)}
 for(i in 2:14){ points(ratio*i, att[i], pch=1, cex=5*prop[i], col="navy") }
 
+text(x=ratio*0.5,y=0.12, labels="New Mexico as Control", font=2)
 text(x=ratio*0.5,y=att[1]-0.01, labels="All Voter", font=2)
 text(x=ratio*2, y=att[2]+0.01, labels="Frequent Voter", font=2)
 text(x=ratio*3, y=att[3]+0.01, labels="Infrequent Voter", font=2)
