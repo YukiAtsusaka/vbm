@@ -61,14 +61,12 @@ nc12_16 <- union_all(nc2012_sl, nc2016_sl) %>%  # 8279011 + 7539082 (= 15818093)
 write_csv(nc12_16, "Stack_NC_2012_2016.csv")
 
 
-# SIDE- POPULATION OF INTEREST
-nc12_16 <- union_all(nc2012_sl, nc2016_sl) %>%  # 8279011 + 7539082 (= 15818093)
-  mutate(State = "North Carolina") %>%
-  filter(is.na(Vote)==F) %>%
-  filter(is.na(female)==F & is.na(democrat)==F & is.na(age)==F & is.na(estrace)==F)                      # 15078164 obs left  
-write_csv(nc12_16, "Stack_NC_2012_2016_expanded.csv")
-
-
+# # SIDE- POPULATION OF INTEREST
+# nc12_16 <- union_all(nc2012_sl, nc2016_sl) %>%  # 8279011 + 7539082 (= 15818093)
+#   mutate(State = "North Carolina") %>%
+#   filter(is.na(Vote)==F) %>%
+#   filter(is.na(female)==F & is.na(democrat)==F & is.na(age)==F & is.na(estrace)==F)                      # 15078164 obs left  
+# write_csv(nc12_16, "Stack_NC_2012_2016_expanded.csv")
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++#
