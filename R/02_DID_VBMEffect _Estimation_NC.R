@@ -285,11 +285,59 @@ write_csv(dat_samp, "Stack_Colorado_NC_2012_2016_Sample_Infrequent.csv")
 ################################################################################################
 
 
+# SIMPLE RANDOM SAMPLING (THOSE WHO REGISTERED WITHIN 6MONTHS) ==================================================#
+set.seed(1029501)
+sample_CO <- datCO %>% filter(RGroup==1) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+  sample(size=round(0.03*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
+datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
+
+set.seed(1029501)
+sample_NC <- datNC %>% filter(RGroup==1) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+  sample(size=round(0.03*dim(datNC)[1]), replace=F)   # SAMPLE 1% = 24178
+datNC.s <- datNC %>% filter(VoterID %in% sample_NC) %>% arrange(VoterID)
+
+dat_samp <- union_all(datCO.s, datNC.s) # Stack two states again
+write_csv(dat_samp, "Stack_Colorado_NC_2012_2016_Sample_RegSixMonth.csv")
+################################################################################################
+
+
+# SIMPLE RANDOM SAMPLING (THOSE WHO REGISTERED WITHIN 1YEAR, MORE THAN 6MONTHS) ==================================================#
+set.seed(1029501)
+sample_CO <- datCO %>% filter(RGroup==2) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+  sample(size=round(0.03*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
+datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
+
+set.seed(1029501)
+sample_NC <- datNC %>% filter(RGroup==2) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+  sample(size=round(0.03*dim(datNC)[1]), replace=F)   # SAMPLE 1% = 24178
+datNC.s <- datNC %>% filter(VoterID %in% sample_NC) %>% arrange(VoterID)
+
+dat_samp <- union_all(datCO.s, datNC.s) # Stack two states again
+write_csv(dat_samp, "Stack_Colorado_NC_2012_2016_Sample_RegOneYear.csv")
+################################################################################################
+
+
+# SIMPLE RANDOM SAMPLING (THOSE WHO REGISTERED LONGER) ==================================================#
+set.seed(1029501)
+sample_CO <- datCO %>% filter(RGroup==3) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+  sample(size=round(0.03*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
+datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
+
+set.seed(1029501)
+sample_NC <- datNC %>% filter(RGroup==3) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+  sample(size=round(0.03*dim(datNC)[1]), replace=F)   # SAMPLE 1% = 24178
+datNC.s <- datNC %>% filter(VoterID %in% sample_NC) %>% arrange(VoterID)
+
+dat_samp <- union_all(datCO.s, datNC.s) # Stack two states again
+write_csv(dat_samp, "Stack_Colorado_NC_2012_2016_Sample_RegOneYear.csv")
+################################################################################################
+
+
+
 
 ################################################################################################
 # (2) PREPROCESSING DATA
 # ESTIMAND: ATT (AVERAGED TREATMENT EFFECT ON THE TREATED)
-
 library(tidyverse)
 library(Matching)
 library(ebal)
