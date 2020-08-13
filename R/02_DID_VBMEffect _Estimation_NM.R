@@ -7,10 +7,10 @@
 ################################################################################################
 
 ##################################################s##############################################
-# (1) SIMPLE RANDOM SAMPLING
-#  rm(list=ls())
-#  library(tidyverse)
-# 
+(1) SIMPLE RANDOM SAMPLING
+ rm(list=ls())
+ library(tidyverse)
+
 # #IDENTIFICATINO FOR voted2010 variable
 # dat <- read_csv("Stack_Colorado_NM_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 # dat <- dat %>%
@@ -32,11 +32,11 @@
 #  dat.imp2 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 0)) # Lowest Value
 #  dat.imp3 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 1)) # Highest Value
 # 
-#  mean(dat.imp$voted2010==dat.imp2$voted2010) #  0.6581669
-#  mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.9486504
-#  mean(dat.imp$voted2010) #[1] 0.710823
-#  mean(dat.imp2$voted2010) #[1] 0.3689899
-#  mean(dat.imp3$voted2010) #[1] 0.7621726
+#  mean(dat.imp$voted2010==dat.imp2$voted2010) #  0.6507874
+#  mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.9476109
+#  mean(dat.imp$voted2010) #[1] 0.7153486
+#  mean(dat.imp2$voted2010) #[1] 0.3661361
+#  mean(dat.imp3$voted2010) #[1] 0.7677377
 # 
 #  write_csv(dat.imp, "Stack_Colorado_NM_2012_2016_imputed.csv")
 #  write_csv(dat.imp2, "Stack_Colorado_NM_2012_2016_imputed_Low.csv")
@@ -65,6 +65,38 @@ datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
 write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample.csv")
 ########################################################################################
+
+# SIMPLE RANDOM SAMPLING (Frequent Voters) ==================================================#
+set.seed(1029501)
+sample_CO <- datCO %>% filter(voted2010==1) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+  sample(size=round(0.03*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
+datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
+
+set.seed(1029501)
+sample_NM <- datNM %>% filter(voted2010==1) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+  sample(size=round(0.2*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
+
+dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Frequent.csv")
+################################################################################################
+
+
+# SIMPLE RANDOM SAMPLING (Infrequent Voters) ==================================================#
+set.seed(1029501)
+sample_CO <- datCO %>% filter(voted2010==0) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+  sample(size=round(0.03*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
+datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
+
+set.seed(1029501)
+sample_NM <- datNM %>% filter(voted2010==0) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+  sample(size=round(0.2*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
+
+dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Infrequent.csv")
+################################################################################################
+
 
 
 # SIMPLE RANDOM SAMPLING (White Voters) ==================================================#
@@ -247,37 +279,6 @@ write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Republican.csv")
 
 
 
-# SIMPLE RANDOM SAMPLING (Frequent Voters) ==================================================#
-set.seed(1029501)
-sample_CO <- datCO %>% filter(voted2010==1) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.01*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
-datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
-
-set.seed(1029501)
-sample_NM <- datNM %>% filter(voted2010==1) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
-datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
-
-dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Frequent.csv")
-################################################################################################
-
-
-# SIMPLE RANDOM SAMPLING (Infrequent Voters) ==================================================#
-set.seed(1029501)
-sample_CO <- datCO %>% filter(voted2010==0) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.03*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
-datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
-
-set.seed(1029501)
-sample_NM <- datNM %>% filter(voted2010==0) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.3*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
-datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
-
-dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Infrequent.csv")
-################################################################################################
-
 
 
 ################################################################################################
@@ -294,7 +295,7 @@ rm(list=ls())
 
 
 # CURRENTLY BASED ON IMPUTATION "LOGIT"/10
-dat_s <- read_csv("Stack_Colorado_NM_2012_2016_Sample_Infrequent.csv",     
+dat_s <- read_csv("Stack_Colorado_NM_2012_2016_Sample_AgeHigh.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE
@@ -323,11 +324,12 @@ match.dat <- match.dat %>% left_join(w, by="VoterID")
 
 # COVARIATE BALANCE
 love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), threshold = .1)
-ggsave("NM_CovBalance.pdf", width=8, height=5)
 # Save by Porrail (8.00 x 5.00)
 ################################################################################################
 
 
+3620569/(873783  + 3620569)
+1029466/(976558 + 1029466)
 
 ################################################################################################
 # (3) TWO-YEAR PRE-STRATIFIED AND PREPROCESSED DATA
