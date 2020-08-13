@@ -59,7 +59,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-             sample(size=round(0.01*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+             sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
@@ -75,7 +75,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% filter(estrace=="White") %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.01*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
@@ -107,7 +107,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% filter(estrace=="Hispanic") %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.003*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
@@ -139,7 +139,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% filter(female==0) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.01*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
@@ -155,7 +155,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% filter(female==1) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.01*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
@@ -172,7 +172,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% filter(age<=35) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.01*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
@@ -189,7 +189,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% filter(age>35 & age<=65) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.01*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
@@ -205,7 +205,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% filter(age>65) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.01*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
@@ -222,7 +222,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% filter(democrat==1) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.01*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
@@ -238,7 +238,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% filter(democrat==0) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.01*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
@@ -255,7 +255,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% filter(voted2010==1) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.01*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
@@ -271,7 +271,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NM <- datNM %>% filter(voted2010==0) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.03*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.3*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
@@ -323,6 +323,7 @@ match.dat <- match.dat %>% left_join(w, by="VoterID")
 
 # COVARIATE BALANCE
 love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), threshold = .1)
+ggsave("NM_CovBalance.pdf", width=8, height=5)
 # Save by Porrail (8.00 x 5.00)
 ################################################################################################
 
