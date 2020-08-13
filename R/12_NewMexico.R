@@ -95,10 +95,14 @@ dat2 <- dat %>% mutate(voterID = text_registrant_id,
 #          dplyr::select(population, R_date, Reg_bf16, Reg_in16, Reg_in12,
 #                       voting_method_pr2016, voting_method_pr2012)
 
+mdy(11082016) - mdy(11062012)
+
+
 dat3 <- dat2 %>%
         filter(population==1) %>% # ONLY KEEP THOSE WHO REGISTERED BTW 2012-2016
         mutate(estrace = est.race, VoterID = voterID) %>%
         filter(R_length < 36500) %>% # Registered less than 100 years
+        filter(R_length >= 1463) %>% # Registered before 2012 election
         dplyr::select(VoterID, voted2010, voted2012, voted2014, voted2016, female, democrat, estrace, State, birthyear, R_length)
 
 hist(dat3$R_length/365, main="Years of Registration (New Mexico)", breaks=80)
