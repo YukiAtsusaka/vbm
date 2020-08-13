@@ -55,7 +55,7 @@ pal = c("gray30", "gray30", "firebrick4")
 
 
 plot(y, y_prior, type = "n", xlim = c(0, 0.105), ylim = c(0, y_max),
-         ylab = "density", xlab="Total VBM Effect", main="North Carolina as Control", cex.mai=1.2)
+         ylab = "density", xlab="Total VBM Effect", main="North Carolina as Control", cex.main=1.5)
 
 # PRIOR, LIKELIHOOD, POSTERIOR
 lines(y, y_prior, col = pal[1], lty = 2, lwd = 2)
@@ -128,13 +128,13 @@ pal = c("gray30", "gray30", "firebrick4")
 
 
 plot(y, y_prior, type = "n", xlim = c(0, 0.105), ylim = c(0, y_max),
-         ylab = "density", xlab="Total VBM Effect", main="New Mexico as Control", cex.main=1.2)
+         ylab = "density", xlab="Total VBM Effect", main="New Mexico as Control", cex.main=1.5)
 
 # PRIOR, LIKELIHOOD, POSTERIOR
 lines(y, y_prior, col = pal[1], lty = 2, lwd = 2)
 lines(y, y_lik, col = pal[2], lwd = 4)
 lines(y, y_post, col = pal[3], lwd = 5, lty=2)
-text(x=0.07, y=45, labels="0.057 (sd=0.003)", col=pal[2], cex=1.1)
+text(x=0.07, y=45, labels="0.050 (sd=0.005)", col=pal[2], cex=1.1)
 arrows(x0=0.065, x1=0.06, y0=40,y1=30, length=0.1,lwd=1.5,col=pal[2])
 #text(x=0.025, y=40, labels="0.041 (sd=0.03)", col=pal[1], cex=1.1)
 #arrows(x0=0.03, x1=0.036, y0=35,y1=16, length=0.1,lwd=1.5,col=pal[1])
