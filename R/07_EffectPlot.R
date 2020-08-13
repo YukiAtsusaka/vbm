@@ -41,7 +41,7 @@ se  <- c(0.003, 0.003, 0.002, 0.003, 0.003, 0.003, 0.003, 0.003, 0.003,
          0.003, 0.003, 0.004, 0.003, 0.003)
 
 
-y <- seq(from=0, to=0.13, length=101)
+y <- seq(from=0, to=0.12, length=101)
 x <- seq(from=0, to=100, by=1)
 ratio <- 100/(14)
 cole <- "firebrick4"
@@ -69,12 +69,12 @@ abline(h=0)
 
 arrows(y0=att[1]-1.96*se[1], y1=att[1]+1.96*se[1],
        x0=ratio*0.5, x1=ratio*0.5, length=0, angle=0, col=cole, lwd=4)
-points(ratio*0.5, att[1], pch=1, cex=5)
+points(ratio*0.5, att[1], pch=1, cex=4)
 for(i in 2:14){ arrows(y0=att[i]-1.96*se[i], y1=att[i]+1.96*se[i],
                        x0=ratio*i, x1=ratio*i, length=0, angle=0, col=cole, lwd=4)}
-for(i in 2:14){ points(ratio*i, att[i], pch=1, cex=5*prop[i], col="navy") }
+for(i in 2:14){ points(ratio*i, att[i], pch=1, cex=4*prop[i], col="navy") }
 
-text(x=ratio*0.5,y=0.12, labels="North Carolina as Control", font=2)
+text(x=ratio*1.3,y=0.115, labels="North Carolina as Control", font=2)
 text(x=ratio*0.5,y=att[1]-0.01, labels="All Voter", font=2)
 text(x=ratio*2, y=att[2]+0.01, labels="Frequent Voter", font=2)
 text(x=ratio*3, y=att[3]+0.01, labels="Infrequent Voter", font=2)
@@ -113,13 +113,13 @@ prop = c(1, 0.848, 0.152,                # All, frequent, infrequent
          0.156, 0.618, 0.226)            # U35, 35-65, O65 
 
 # CATTs from Table D.1 on Online Appendix 
-att <- c(0.050, 0.076, 0.028, 0.057, 0.060, 0.020, 0.069, 0.058, 0.053, 
-         0.036, 0.058, 0.040, 0.053, 0.067)
-se  <- c(0.005, 0.004, 0.003, 0.004, 0.005, 0.007, 0.006, 0.004, 0.005, 
-         0.004, 0.005, 0.006, 0.004, 0.004)
+att <- c(0.052, 0.079, 0.051, 0.059, 0.063, 0.024, 0.073, 0.052, 0.056, 
+         0.037, 0.060, 0.024, 0.060, 0.069)
+se  <- c(0.003, 0.002, 0.002, 0.003, 0.006, 0.002, 0.006, 0.003, 0.003, 
+         0.003, 0.003, 0.003, 0.003, 0.002)
 
 
-y <- seq(from=0, to=0.13, length=101)
+y <- seq(from=0, to=0.12, length=101)
 x <- seq(from=0, to=100, by=1)
 ratio <- 100/(14)
 cole <- "firebrick4"
@@ -147,12 +147,12 @@ abline(h=0)
 
 arrows(y0=att[1]-1.96*se[1], y1=att[1]+1.96*se[1],
        x0=ratio*0.5, x1=ratio*0.5, length=0, angle=0, col=cole, lwd=4)
-points(ratio*0.5, att[1], pch=1, cex=5)
+points(ratio*0.5, att[1], pch=1, cex=4)
 for(i in 2:14){ arrows(y0=att[i]-1.96*se[i], y1=att[i]+1.96*se[i],
                        x0=ratio*i, x1=ratio*i, length=0, angle=0, col=cole, lwd=4)}
-for(i in 2:14){ points(ratio*i, att[i], pch=1, cex=5*prop[i], col="navy") }
+for(i in 2:14){ points(ratio*i, att[i], pch=1, cex=4*prop[i], col="navy") }
 
-text(x=ratio*0.5,y=0.12, labels="New Mexico as Control", font=2)
+text(x=ratio*1.3,y=0.115, labels="New Mexico as Control", font=2)
 text(x=ratio*0.5,y=att[1]-0.01, labels="All Voter", font=2)
 text(x=ratio*2, y=att[2]+0.01, labels="Frequent Voter", font=2)
 text(x=ratio*3, y=att[3]+0.01, labels="Infrequent Voter", font=2)
