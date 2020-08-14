@@ -191,10 +191,55 @@ stack_co_nm <- union_all(stack_co, stack_nm) %>%
 write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2016.csv")
 #########################################################################################################
 
+#########################################################################################################
+# 8/14/2020 EXTRACT 2014 COLORADO TURNOUT
+#########################################################################################################
+
+rm(list=ls())
+library(tidyverse)
+library(haven)
+
+setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
+
+#dat <- read_dta("voterfile_fixed_Nov15.dta") # Colorado 2014
+#write_csv(dat, "voterfile_fixed_Nov15.csv")
+
+dat <- read_csv("voterfile_fixed_Nov15.csv") # Same Voter appears 3 times
+
+temp <- dat %>% dplyr::select(vid, year, vote, elec2012, elec2014) %>%
+        arrange(vid, year)
+
+
+dat2 <- dat %>% filter(!is.na(elec2014)  & year==2014) %>%
+        mutate(VoterID = vid, 
+               voted2014 = vote) %>% 
+        dplyr::select(VoterID, voted2014) 
+
+write_csv(dat2, "Colo2014.csv")
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+# STACKING TREATMENT AND CONTROL STATES (III) 8/14/2020
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+# MAIN POPULATION OF INTEREST
+rm(list=ls())
+library(tidyverse)
+stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
+co2014 <- read_csv("Colo2014.csv") # 6601464
+stack_co <- stack_co %>% left_join(co2014, by=c("VoterID", "VoterID"))
 
 
 
+stack_nc <- read_csv("Stack_NC_2012_2016.csv")       # 12089156
+stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
+stack_nc <- stack_nc %>% select(-voted2012)
 
+stack_co_nc <- union_all(stack_co, stack_nc) %>%
+               mutate(Time = ifelse(Year==2016, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 18367514
+
+write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2016.csv")
 
 
 
