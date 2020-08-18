@@ -203,7 +203,6 @@ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
 #dat <- read_dta("voterfile_fixed_Nov15.dta") # Colorado 2014
 #write_csv(dat, "voterfile_fixed_Nov15.csv")
-
 dat <- read_csv("voterfile_fixed_Nov15.csv") # Same Voter appears 3 times
 # temp <- dat %>% dplyr::select(vid, year, vote, elec2012, elec2014) %>%
 #         arrange(vid, year)
@@ -214,9 +213,28 @@ dat2 <- dat %>% filter(!is.na(elec2014)  & year==2014) %>%
 
 write_csv(dat2, "Colo2014.csv")
 
+#########################################################################################################
+# 8/18/2020 EXTRACT 2014 NORTH CAROLINA TURNOUT
+#########################################################################################################
+
+rm(list=ls())
+library(tidyverse)
+library(haven)
+
+setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
+
+# dat <- read_dta("2014 NC Voters.dta") # North Carolina 2014
+# write_csv(dat, "2014 NC Voters.csv")
+dat <- read_csv("2014 NC Voters.csv") # Only who voted are included here
+dat2 <- dat %>% mutate(VoterID = ncid, voted2014 = 1) %>%
+        dplyr::select(VoterID, voted2014)
+
+write_csv(dat2, "NorthCarolina2014.csv")
+
+
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-# STACKING TREATMENT AND CONTROL STATES (III) 8/14/2020
+# STACKING TREATMENT AND CONTROL STATES (III) 8/14/2020, 8/18/2020
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 # MAIN POPULATION OF INTEREST
 rm(list=ls())
@@ -224,27 +242,38 @@ library(tidyverse)
 stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
 co2014 <- read_csv("Colo2014.csv")                   # 2293221
 co2014 <- co2014 %>% arrange(VoterID) %>% distinct(VoterID, voted2014)# Drop duplicates
+
 stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
-stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),
-                                Year = ifelse(Year==2012, Year, 2014)) %>%
+stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
+                                Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
             dplyr::select(-voted2014)
 
 # START FROM HERE NEXT TIME 8/14/2020
+stack_nc <- read_csv("Stack_NC_2012_2016.csv") # 12089156
 
-stack_nc <- read_csv("Stack_NC_2012_2016.csv")       # 12089156
+nc2014 <- read_csv("NorthCarolina2014.csv")    # 2938955 
+nc2014 <- nc2014 %>% arrange(VoterID) %>% distinct(VoterID, voted2014)# Drop duplicates
+stack_nc <- stack_nc %>% left_join(nc2014, by="VoterID") # 4494352
+stack_nc <- stack_nc %>% mutate(voted2014 = ifelse(!is.na(voted2014), voted2014, 0))
+
+stack_nc <- stack_nc %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
+                                Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
+            dplyr::select(-voted2014)
+
+
 stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
 stack_nc <- stack_nc %>% select(-voted2012)
 
+
 stack_co_nc <- union_all(stack_co, stack_nc) %>%
-               mutate(Time = ifelse(Year==2016, 1, 0),
+               mutate(Time = ifelse(Year==2014, 1, 0),
                       Place = ifelse(State=="Colorado", 1,0),
-                      Intervent = Time*Place) # 18367514
+                      Intervent = Time*Place) # 16583508
 
 write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2014.csv")
 
 
-
-
+#########################################################################################################
 # # SIDE-POPULATION OF INTEREST
 # rm(list=ls())
 # library(tidyverse)
