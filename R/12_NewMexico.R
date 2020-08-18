@@ -65,11 +65,9 @@ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 estrace <- read_csv("NewMexico_Race.csv")
 dat <- read_dta("new mexico voter file 2017.dta")
 
-
 # TEMPOLARITY (DON'T KNOW IF THIS IS THE RIGHT WAY)
-dat.s <- dat %>% filter(voting_method_gn2016!=""& # FIXED pt to gn 8/11/2020
-                        voting_method_gn2012!="")
-
+#dat.s <- dat %>% filter(voting_method_gn2016!=""& # FIXED pt to gn 8/11/2020
+#                        voting_method_gn2012!="")
 
 dat2 <- dat %>% mutate(voterID = text_registrant_id,
                        female =  ifelse(cde_gender=="F",1,0),
@@ -122,10 +120,10 @@ nm16 <- dat3 %>% mutate(Vote = voted2016, age = 2016 - birthyear, Year=2016) %>%
                dplyr:: select(VoterID, female, democrat, age, estrace, State, Vote, Year, voted2010)
   
 nm12_16 <- rbind(nm12,nm16)
+nm12_14 <- rbind(nm12,nm14)
 
 write_csv(nm12_16, "Stack_NM_2012_2016.csv")
-
-
+write_csv(nm12_16, "Stack_NM_2012_2014.csv")
 
 # CHECK
 #> table(dat$voting_method_pr2016)
