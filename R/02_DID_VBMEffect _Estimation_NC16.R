@@ -8,45 +8,42 @@
 
 ################################################################################################
 # (1) SIMPLE RANDOM SAMPLING
- rm(list=ls());gc();gc()
- library(tidyverse)
+# rm(list=ls())
+# library(tidyverse)
 #
- # IDENTIFICATINO FOR voted2010 variable
-setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
-  dat <- read_csv("Stack_Colorado_NC_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
-  dat <- dat %>%
-          dplyr::select(-n) %>%
-          filter(is.na(female)==F & is.na(democrat)==F &
-                 is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
-
- datCO <- dat %>% filter(State=="Colorado") %>% dim()
- datNC <- dat %>% filter(State!="Colorado") %>% dim()
- datCO.m <- dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
- datNC.m <- dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim()
+# # IDENTIFICATINO FOR voted2010 variable
+#  dat <- read_csv("Stack_Colorado_NC_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+#  dat <- dat %>%
+#          dplyr::select(-n) %>%
+#          filter(is.na(female)==F & is.na(democrat)==F &
+#                 is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
+#
+# datCO <- dat %>% filter(State=="Colorado") %>% dim()
+# datNC <- dat %>% filter(State!="Colorado") %>% dim()
+# datCO.m <- dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
+# datNC.m <- dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim()
+#
 
 #
- m <- glm(voted2010 ~ female+democrat+age+estrace+State, family=binomial,dat)
- pred.val <- predict(m, dat[,c(2,3,4,5,6)], type="response")
- pred_voted2010 <- ifelse(pred.val >=0.5, 1,0)
-
- dat.imp  <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, pred_voted2010))
- dat.imp2 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 0)) # Lowest Value
- dat.imp3 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 1)) # Highest Value
-
- mean(dat.imp$voted2010==dat.imp2$voted2010) # 0.8515118
- mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.991069
- mean(dat.imp$voted2010) #[1] 0.5470006
- mean(dat.imp2$voted2010) #[1] 0.3985124
- mean(dat.imp3$voted2010) #[1] 0.5559316
+# m <- glm(voted2010 ~ female+democrat+age+estrace+State, family=binomial,dat)
+# pred.val <- predict(m, dat[,c(2,3,4,5,6)], type="response")
+# pred_voted2010 <- ifelse(pred.val >=0.5, 1,0)
 #
- write_csv(dat.imp, "Stack_Colorado_NC_2012_2016_imputed.csv")
- write_csv(dat.imp2, "Stack_Colorado_NC_2012_2016_imputed_Low.csv")
- write_csv(dat.imp3, "Stack_Colorado_NC_2012_2016_imputed_Up.csv")
+# dat.imp  <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, pred_voted2010))
+# dat.imp2 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 0)) # Lowest Value
+# dat.imp3 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 1)) # Highest Value
+#
+# mean(dat.imp$voted2010==dat.imp2$voted2010) # 0.8515118
+# mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.991069
+# mean(dat.imp$voted2010) #[1] 0.5470006
+# mean(dat.imp2$voted2010) #[1] 0.3985124
+# mean(dat.imp3$voted2010) #[1] 0.5559316
+#
+# write_csv(dat.imp, "Stack_Colorado_NC_2012_2016_imputed.csv")
+# write_csv(dat.imp2, "Stack_Colorado_NC_2012_2016_imputed_Low.csv")
+# write_csv(dat.imp3, "Stack_Colorado_NC_2012_2016_imputed_Up.csv")
 
-################################################################################################
- 
- 
-rm(list=ls());gc();gc()
+rm(list=ls())
 dat <- read_csv("Stack_Colorado_NC_2012_2016_imputed_Up.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
 datCO <- dat %>% filter(Place==1)
