@@ -7,46 +7,59 @@
 ################################################################################################
 
 ##################################################s##############################################
-(1) SIMPLE RANDOM SAMPLING
- rm(list=ls())
- library(tidyverse)
+# (1) SIMPLE RANDOM SAMPLING
+rm(list=ls())
+ library(tidyverse);gc();gc()
+#
+ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
-# #IDENTIFICATINO FOR voted2010 variable
-# dat <- read_csv("Stack_Colorado_NM_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
-# dat <- dat %>%
-#          dplyr::select(-n) %>%
-#          filter(is.na(female)==F & is.na(democrat)==F &
-#                 is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
-# 
-#  dat %>% filter(State=="Colorado") %>% dim()
-#  dat %>% filter(State!="Colorado") %>% dim()
-#  dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
-#  dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim()
-# 
-# # IMPUTED 8/6/2020
-#  m <- glm(voted2010 ~ female+democrat+age+estrace+State, family=binomial,dat)
-#  pred.val <- predict(m, dat[,c(2,3,4,5,6)], type="response")
-#  pred_voted2010 <- ifelse(pred.val >=0.5, 1,0)
-# 
-#  dat.imp  <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, pred_voted2010))
-#  dat.imp2 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 0)) # Lowest Value
-#  dat.imp3 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 1)) # Highest Value
-# 
-#  mean(dat.imp$voted2010==dat.imp2$voted2010) #  0.6507874
-#  mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.9476109
-#  mean(dat.imp$voted2010) #[1] 0.7153486
-#  mean(dat.imp2$voted2010) #[1] 0.3661361
-#  mean(dat.imp3$voted2010) #[1] 0.7677377
-# 
-#  write_csv(dat.imp, "Stack_Colorado_NM_2012_2016_imputed.csv")
-#  write_csv(dat.imp2, "Stack_Colorado_NM_2012_2016_imputed_Low.csv")
-#  write_csv(dat.imp3, "Stack_Colorado_NM_2012_2016_imputed_Up.csv")
+# LOGIT IMPUTATION
+ dt <- read_csv("Stack_Colorado_NM_2012_2014_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+ dt.s <- dt %>% distinct(VoterID, voted2010);rm(dt) # READY TO MERGE
+ 
+ dat <- read_csv("Stack_Colorado_NM_2012_2014.csv", col_types = cols(VoterID = col_character()))
+ dat.m <- dat %>% left_join(dt.s, by="VoterID") 
+ dat.m <- dat.m %>% mutate(voted2010 = ifelse(!is.na(voted2010.x), voted2010.x, voted2010.y)) %>%
+          dplyr::select(-c(voted2010.x, voted2010.y, n)) %>%
+          filter(!is.na(Vote))
+write_csv(dat.m, "Stack_Colorado_NM_2012_2014_imputed.csv")  
+ 
+ 
+# PARTIAL IDENTIFICATINO I
+rm(list=ls());gc();gc()
+ dt <- read_csv("Stack_Colorado_NM_2012_2014_imputed_Low.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+ dt.s <- dt %>% distinct(VoterID, voted2010);rm(dt) # READY TO MERGE
+ 
+ dat <- read_csv("Stack_Colorado_NM_2012_2014.csv", col_types = cols(VoterID = col_character()))
+ dat.m <- dat %>% left_join(dt.s, by="VoterID") 
+ dat.m <- dat.m %>% mutate(voted2010 = ifelse(!is.na(voted2010.x), voted2010.x, voted2010.y)) %>%
+          dplyr::select(-c(voted2010.x, voted2010.y, n)) %>%
+          filter(!is.na(Vote))
+write_csv(dat.m, "Stack_Colorado_NM_2012_2014_imputed_Low.csv")  
+
+
+# PARTIAL IDENTIFICATION II
+rm(list=ls());gc();gc()
+ dt <- read_csv("Stack_Colorado_NM_2012_2014_imputed_Up.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+ dt.s <- dt %>% distinct(VoterID, voted2010);rm(dt) # READY TO MERGE
+ 
+ dat <- read_csv("Stack_Colorado_NM_2012_2014.csv", col_types = cols(VoterID = col_character()))
+ dat.m <- dat %>% left_join(dt.s, by="VoterID") 
+ dat.m <- dat.m %>% mutate(voted2010 = ifelse(!is.na(voted2010.x), voted2010.x, voted2010.y)) %>%
+          dplyr::select(-c(voted2010.x, voted2010.y, n)) %>%
+          filter(!is.na(Vote))
+write_csv(dat.m, "Stack_Colorado_NM_2012_2014_imputed_Up.csv")  
+
+
+##################################################s##############################################
+# SIMPLE RANDOM SAMPLE
+##################################################s##############################################
 
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
-rm(list=ls())
+rm(list=ls()); gc(); gc()
 library(tidyverse)
 
-dat <- read_csv("Stack_Colorado_NM_2012_2016_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+dat <- read_csv("Stack_Colorado_NM_2012_2014_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
 datCO <- dat %>% filter(Place==1)
 datNM <- dat %>% filter(Place==0)
@@ -63,7 +76,7 @@ sample_NM <- datNM %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample.csv")
 ########################################################################################
 
 # SIMPLE RANDOM SAMPLING (Frequent Voters) ==================================================#
@@ -78,7 +91,7 @@ sample_NM <- datNM %>% filter(voted2010==1) %>% dplyr::select(VoterID) %>% disti
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Frequent.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_Frequent.csv")
 ################################################################################################
 
 
@@ -94,7 +107,7 @@ sample_NM <- datNM %>% filter(voted2010==0) %>% dplyr::select(VoterID) %>% disti
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Infrequent.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_Infrequent.csv")
 ################################################################################################
 
 
@@ -111,7 +124,7 @@ sample_NM <- datNM %>% filter(estrace=="White") %>% dplyr::select(VoterID) %>% d
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_White.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_White.csv")
 ########################################################################################
 
 
@@ -127,7 +140,7 @@ sample_NM <- datNM %>% filter(estrace=="Black") %>% dplyr::select(VoterID) %>% d
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Black.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_Black.csv")
 ########################################################################################
 
 
@@ -143,7 +156,7 @@ sample_NM <- datNM %>% filter(estrace=="Hispanic") %>% dplyr::select(VoterID) %>
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Hispanic.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_Hispanic.csv")
 ################################################################################################
 
 
@@ -159,7 +172,7 @@ sample_NM <- datNM %>% filter(estrace=="Asian") %>% dplyr::select(VoterID) %>% d
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Asian.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_Asian.csv")
 ################################################################################################
 
 
@@ -175,7 +188,7 @@ sample_NM <- datNM %>% filter(female==0) %>% dplyr::select(VoterID) %>% distinct
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Male.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_Male.csv")
 ################################################################################################
 
 
@@ -191,7 +204,7 @@ sample_NM <- datNM %>% filter(female==1) %>% dplyr::select(VoterID) %>% distinct
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Female.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_Female.csv")
 ################################################################################################
 
 
@@ -208,7 +221,7 @@ sample_NM <- datNM %>% filter(age<=35) %>% dplyr::select(VoterID) %>% distinct(V
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_AgeLow.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_AgeLow.csv")
 ################################################################################################
 
 
@@ -225,7 +238,7 @@ sample_NM <- datNM %>% filter(age>35 & age<=65) %>% dplyr::select(VoterID) %>% d
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_AgeMid.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_AgeMid.csv")
 ################################################################################################
 
 
@@ -241,7 +254,7 @@ sample_NM <- datNM %>% filter(age>65) %>% dplyr::select(VoterID) %>% distinct(Vo
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_AgeHigh.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_AgeHigh.csv")
 ################################################################################################
 
 
@@ -258,7 +271,7 @@ sample_NM <- datNM %>% filter(democrat==1) %>% dplyr::select(VoterID) %>% distin
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Democrat.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_Democrat.csv")
 ################################################################################################
 
 
@@ -274,7 +287,7 @@ sample_NM <- datNM %>% filter(democrat==0) %>% dplyr::select(VoterID) %>% distin
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNM.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Republican.csv")
+write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_Republican.csv")
 ################################################################################################
 
 
@@ -291,11 +304,10 @@ library(ebal)
 library(cobalt)
 library(MatchIt)
 library(Hmisc)
-rm(list=ls())
+rm(list=ls());gc(); gc()
 
-
-# CURRENTLY BASED ON IMPUTATION "LOGIT"/10
-dat_s <- read_csv("Stack_Colorado_NM_2012_2016_Sample_AgeHigh.csv",     
+# CURRENTLY BASED ON IMPUTATION "LOGIT"/8/2/2020
+dat_s <- read_csv("Stack_Colorado_NM_2012_2014_Sample_Infrequent.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE
@@ -320,7 +332,7 @@ w <- match.data(m.out16) %>% dplyr::select(c(VoterID, weights)) # Weight for ATT
 match.dat <- dat_s %>% filter(VoterID %in% match.16ID) # MATCHED TWO-YEAR DATA
 match.dat <- match.dat %>% left_join(w, by="VoterID")
 
-#write_csv(match.dat, "Stack_Colorado_NC_2012_2016_Matched.csv")
+#write_csv(match.dat, "Stack_Colorado_NC_2012_2014_Matched.csv")
 
 # COVARIATE BALANCE
 love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), threshold = .1)
