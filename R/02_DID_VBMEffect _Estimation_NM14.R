@@ -14,7 +14,7 @@ rm(list=ls())
  setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
 # LOGIT IMPUTATION
- dt <- read_csv("Stack_Colorado_NM_2012_2014_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+ dt <- read_csv("Stack_Colorado_NM_2012_2016_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
  dt.s <- dt %>% distinct(VoterID, voted2010);rm(dt) # READY TO MERGE
  
  dat <- read_csv("Stack_Colorado_NM_2012_2014.csv", col_types = cols(VoterID = col_character()))
@@ -27,7 +27,7 @@ write_csv(dat.m, "Stack_Colorado_NM_2012_2014_imputed.csv")
  
 # PARTIAL IDENTIFICATINO I
 rm(list=ls());gc();gc()
- dt <- read_csv("Stack_Colorado_NM_2012_2014_imputed_Low.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+ dt <- read_csv("Stack_Colorado_NM_2012_2016_imputed_Low.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
  dt.s <- dt %>% distinct(VoterID, voted2010);rm(dt) # READY TO MERGE
  
  dat <- read_csv("Stack_Colorado_NM_2012_2014.csv", col_types = cols(VoterID = col_character()))
@@ -40,7 +40,7 @@ write_csv(dat.m, "Stack_Colorado_NM_2012_2014_imputed_Low.csv")
 
 # PARTIAL IDENTIFICATION II
 rm(list=ls());gc();gc()
- dt <- read_csv("Stack_Colorado_NM_2012_2014_imputed_Up.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+ dt <- read_csv("Stack_Colorado_NM_2012_2016_imputed_Up.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
  dt.s <- dt %>% distinct(VoterID, voted2010);rm(dt) # READY TO MERGE
  
  dat <- read_csv("Stack_Colorado_NM_2012_2014.csv", col_types = cols(VoterID = col_character()))
@@ -59,7 +59,7 @@ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 rm(list=ls()); gc(); gc()
 library(tidyverse)
 
-dat <- read_csv("Stack_Colorado_NM_2012_2014_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+dat <- read_csv("Stack_Colorado_NM_2012_2014_imputed_Up.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
 datCO <- dat %>% filter(Place==1)
 datNM <- dat %>% filter(Place==0)
@@ -306,7 +306,7 @@ library(MatchIt)
 library(Hmisc)
 rm(list=ls());gc(); gc()
 
-# CURRENTLY BASED ON IMPUTATION "LOGIT"/8/2/2020
+# CURRENTLY BASED ON IMPUTATION "LOW/8/19/2020
 dat_s <- read_csv("Stack_Colorado_NM_2012_2014_Sample_Infrequent.csv",     
                   col_types = cols(VoterID = col_character()))
 
