@@ -58,7 +58,7 @@ write_csv(dat.m, "Stack_Colorado_NC_2012_2014_imputed_Up.csv")
 rm(list=ls());gc();gc()
 library(tidyverse)
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
-dat <- read_csv("Stack_Colorado_NC_2012_2014_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+dat <- read_csv("Stack_Colorado_NC_2012_2014_imputed_Up.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
 datCO <- dat %>% filter(Place==1)
 datNC <- dat %>% filter(Place==0)
@@ -353,8 +353,8 @@ library(cobalt)
 library(MatchIt)
 library(Hmisc)
 
-rm(list=ls())
-# CURRENTLY BASED ON IMPUTATINO "LOGIT" 8/18/2020
+rm(list=ls());gc();gc()
+# CURRENTLY BASED ON IMPUTATINO "UP" 8/19/2020
 dat_s <- read_csv("Stack_Colorado_NC_2012_2014_Sample_Infrequent.csv",     
                   col_types = cols(VoterID = col_character()))
 
