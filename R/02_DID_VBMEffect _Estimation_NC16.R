@@ -8,20 +8,26 @@
 
 ################################################################################################
 # (1) SIMPLE RANDOM SAMPLING
-# rm(list=ls())
-# library(tidyverse)
-#
+rm(list=ls())
+library(tidyverse)
+library(haven)
+
+# BELOW IS TEMPORALIRY 8/19/2020
+setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
+v10 <- read_dta("2010 Voters in Colo 2012hist file.dta")
+
+ 
 # # IDENTIFICATINO FOR voted2010 variable
-#  dat <- read_csv("Stack_Colorado_NC_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
-#  dat <- dat %>%
-#          dplyr::select(-n) %>%
-#          filter(is.na(female)==F & is.na(democrat)==F &
-#                 is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
+  dat <- read_csv("Stack_Colorado_NC_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+  dat <- dat %>%
+          dplyr::select(-n) %>%
+          filter(is.na(female)==F & is.na(democrat)==F &
+                 is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
 #
-# datCO <- dat %>% filter(State=="Colorado") %>% dim()
-# datNC <- dat %>% filter(State!="Colorado") %>% dim()
-# datCO.m <- dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
-# datNC.m <- dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim()
+ datCO <- dat %>% filter(State=="Colorado") %>% dim()
+ datNC <- dat %>% filter(State!="Colorado") %>% dim()
+ datCO.m <- dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
+ datNC.m <- dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim()
 #
 
 #
