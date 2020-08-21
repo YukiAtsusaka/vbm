@@ -59,7 +59,7 @@ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 rm(list=ls()); gc(); gc()
 library(tidyverse)
 
-dat <- read_csv("Stack_Colorado_NM_2012_2014_imputed_Up.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+dat <- read_csv("Stack_Colorado_NM_2012_2014_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
 datCO <- dat %>% filter(Place==1)
 datNM <- dat %>% filter(Place==0)
@@ -307,7 +307,7 @@ library(Hmisc)
 rm(list=ls());gc(); gc()
 
 # CURRENTLY BASED ON IMPUTATION "LOW/8/19/2020
-dat_s <- read_csv("Stack_Colorado_NM_2012_2014_Sample_Infrequent.csv",     
+dat_s <- read_csv("Stack_Colorado_NM_2012_2014_Sample_AgeHigh.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE
