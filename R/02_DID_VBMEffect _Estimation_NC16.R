@@ -15,6 +15,9 @@ library(haven)
 # BELOW IS TEMPORALIRY 8/19/2020
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 v10 <- read_dta("2010 Voters in Colo 2012hist file.dta")
+v <- v10 %>% mutate(VoterID = as.character(voter_id),
+                    voted2010 = voted_2010) %>%
+     dplyr::select(VoterID, voted2010)
 
  
 # # IDENTIFICATINO FOR voted2010 variable
@@ -23,7 +26,12 @@ v10 <- read_dta("2010 Voters in Colo 2012hist file.dta")
           dplyr::select(-n) %>%
           filter(is.na(female)==F & is.na(democrat)==F &
                  is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
-#
+
+  dat.m <- dat %>% left_join(v, by="VoterID")
+  
+  
+  
+  #
  datCO <- dat %>% filter(State=="Colorado") %>% dim()
  datNC <- dat %>% filter(State!="Colorado") %>% dim()
  datCO.m <- dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
