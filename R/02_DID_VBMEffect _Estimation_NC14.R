@@ -58,7 +58,7 @@ write_csv(dat.m, "Stack_Colorado_NC_2012_2014_imputed_Up.csv")
 rm(list=ls());gc();gc()
 library(tidyverse)
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
-dat <- read_csv("Stack_Colorado_NC_2012_2014_imputed_Up.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+dat <- read_csv("Stack_Colorado_NC_2012_2014_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
 datCO <- dat %>% filter(Place==1)
 datNC <- dat %>% filter(Place==0)
@@ -293,55 +293,6 @@ write_csv(dat_samp, "Stack_Colorado_NC_2012_2014_Sample_Republican.csv")
 
 
 
-# SIMPLE RANDOM SAMPLING (THOSE WHO REGISTERED WITHIN 6MONTHS) ==================================================#
-set.seed(1029501)
-sample_CO <- datCO %>% filter(RGroup==1) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.03*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
-datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
-
-set.seed(1029501)
-sample_NC <- datNC %>% filter(RGroup==1) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.03*dim(datNC)[1]), replace=F)   # SAMPLE 1% = 24178
-datNC.s <- datNC %>% filter(VoterID %in% sample_NC) %>% arrange(VoterID)
-
-dat_samp <- union_all(datCO.s, datNC.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NC_2012_2014_Sample_RegSixMonth.csv")
-################################################################################################
-
-
-# SIMPLE RANDOM SAMPLING (THOSE WHO REGISTERED WITHIN 1YEAR, MORE THAN 6MONTHS) ==================================================#
-set.seed(1029501)
-sample_CO <- datCO %>% filter(RGroup==2) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.03*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
-datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
-
-set.seed(1029501)
-sample_NC <- datNC %>% filter(RGroup==2) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.03*dim(datNC)[1]), replace=F)   # SAMPLE 1% = 24178
-datNC.s <- datNC %>% filter(VoterID %in% sample_NC) %>% arrange(VoterID)
-
-dat_samp <- union_all(datCO.s, datNC.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NC_2012_2014_Sample_RegOneYear.csv")
-################################################################################################
-
-
-# SIMPLE RANDOM SAMPLING (THOSE WHO REGISTERED LONGER) ==================================================#
-set.seed(1029501)
-sample_CO <- datCO %>% filter(RGroup==3) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.03*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
-datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
-
-set.seed(1029501)
-sample_NC <- datNC %>% filter(RGroup==3) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.03*dim(datNC)[1]), replace=F)   # SAMPLE 1% = 24178
-datNC.s <- datNC %>% filter(VoterID %in% sample_NC) %>% arrange(VoterID)
-
-dat_samp <- union_all(datCO.s, datNC.s) # Stack two states again
-write_csv(dat_samp, "Stack_Colorado_NC_2012_2014_Sample_RegOneYear.csv")
-################################################################################################
-
-
-
 
 ################################################################################################
 # (2) PREPROCESSING DATA
@@ -354,8 +305,8 @@ library(MatchIt)
 library(Hmisc)
 
 rm(list=ls());gc();gc()
-# CURRENTLY BASED ON IMPUTATINO "UP" 8/19/2020
-dat_s <- read_csv("Stack_Colorado_NC_2012_2014_Sample_Infrequent.csv",     
+# CURRENTLY BASED ON IMPUTATINO "LOGIT" 8/19/2020
+dat_s <- read_csv("Stack_Colorado_NC_2012_2014_Sample_AgeHigh.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE
@@ -408,7 +359,7 @@ summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(d
 summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+age, match.dat, weights=weights))#$coef[2,1:2]
 
 # Age Low, Mid, High
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))#$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
 
 
 
