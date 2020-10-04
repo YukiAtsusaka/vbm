@@ -58,10 +58,12 @@ v <- v10 %>% mutate(VoterID = as.character(voter_id),
 # write_csv(dat.imp3, "Stack_Colorado_NC_2012_2016_imputed_Up.csv")
 
 rm(list=ls())
-dat <- read_csv("Stack_Colorado_NC_2012_2016_imputed_Up.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+dat <- read_csv("Stack_Colorado_NC_2012_2016_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
 datCO <- dat %>% filter(Place==1)
 datNC <- dat %>% filter(Place==0)
+
+
 
 # SIMPLE RANDOM SAMPLING (All Voters) ==================================================#
 set.seed(1029501)
