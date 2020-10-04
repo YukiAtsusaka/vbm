@@ -94,6 +94,7 @@ library(tidyverse)
 #              distinct(voter_id, .keep_all=T)     # 3778507      # Drop duplicates [A LOT, needs check]
 #write_csv(sup_co2016, "co2016_sup.csv")
 
+setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
 # Read Data
 co2012 <- read_csv("co2012.csv")
@@ -130,7 +131,12 @@ co12_16 <- co2012_sl %>%
            add_count(VoterID) %>%
            filter(n==2)
 
-co2010 <- read_csv("Colorado_voted2010.csv")
+co2010 <- read_csv("Colorado_voted2010.csv") # Original data
+
+# 10/3/2020 Use Bob'S updated data
+#co2010 <- read_csv("2010 Reg Co Voters and Vote History.dta")
+# This file is broken
+
 co12_16 <- co12_16 %>% left_join(co2010, by="VoterID") # 4484352
 
 write_csv(co12_16, "Stack_Colorado_2012_2016.csv")
@@ -178,7 +184,7 @@ write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2016.csv")
 # STACKING TREATMENT AND CONTROL STATES (II) 8/6/2020
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 # MAIN POPULATION OF INTEREST
-rm(list=ls())
+rm(list=ls());gc();gc()
 library(tidyverse)
 stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
 stack_nm <- read_csv("Stack_NM_2012_2016.csv")       # 1616984
@@ -278,7 +284,7 @@ write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2014.csv")
 # STACKING TREATMENT AND CONTROL STATES (III) 8/14/2020, 8/18/2020
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 # MAIN POPULATION OF INTEREST
-rm(list=ls())
+rm(list=ls());gc(); gc()
 library(tidyverse)
 stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
 co2014 <- read_csv("Colo2014.csv")                   # 2293221
@@ -290,7 +296,7 @@ stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # R
             dplyr::select(-voted2014)
 
 # START FROM HERE NEXT TIME 8/14/2020
-stack_nm <- read_csv("Stack_NM_2012_2014.csv") # 12089156
+stack_nm <- read_csv("Stack_NM_2012_2014.csv") # 2006024
 
 stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
 stack_nm <- stack_nm %>% mutate(VoterID = as.character(VoterID))
