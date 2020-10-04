@@ -72,9 +72,9 @@ write_csv(nc12_16, "Stack_NC_2012_2016.csv")
 #+++++++++++++++++++++++++++++++++++++++++++++#
 # COLORADO (TREATMENT STATE)
 #+++++++++++++++++++++++++++++++++++++++++++++#
-rm(list=ls()); gc(); gc()
-library(haven)
-library(tidyverse)
+# rm(list=ls()); gc(); gc()
+# library(haven)
+# library(tidyverse)
 
 #co2012 <- read_dta("Colo 2012 voted.dta") # 3738665
 #co2012 <- co2012 %>% distinct(voter_id, .keep_all=T) # 3642765   # Drop duplicates [A LOT, needs check]
@@ -100,6 +100,9 @@ library(tidyverse)
 # write_csv(voted2010, "Colorado2010_turnout.csv")
 
 
+rm(list=ls()); gc(); gc()
+library(haven)
+library(tidyverse)
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
 # Read Data
@@ -113,9 +116,6 @@ co2012_sl <- co2012 %>%             # 3738665 obs
              left_join(sup_co2012, by="voter_id") %>%
              rename(Vote = voted_2012, VoterID = voter_id,
                     gender = gender1, age = age1)
-
-# Warning message:
-#   Column `voter_id` has different attributes on LHS and RHS of join
 
 co2016_sl <- co2016 %>%             # 3981191 obs 
              left_join(sup_co2016, by="voter_id") %>%
@@ -143,7 +143,9 @@ co12_16 <- co2012_sl %>%
 co2010 <- read_csv("Colorado2010_turnout.csv")
 
 
-co12_16 <- co12_16 %>% left_join(co2010, by="VoterID") # 4484352
+co12_16 <- co12_16 %>% left_join(co2010, by="VoterID") # 4494348
+mean(!is.na(co12_16$voted2010)) # 0.9074259
+mean(co12_16$voted2010, na.rm=T) # 0.6853199 more reasonable
 
 write_csv(co12_16, "Stack_Colorado_2012_2016.csv")
 
@@ -170,7 +172,7 @@ write_csv(co12_16, "Stack_Colorado_2012_2016.csv")
 # STACKING TREATMENT AND CONTROL STATES (I)
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 # MAIN POPULATION OF INTEREST
-rm(list=ls())
+rm(list=ls());gc(); gc()
 library(tidyverse)
 library(magrittr)
 stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
