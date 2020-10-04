@@ -15,7 +15,7 @@ library(tidyverse)
 library("ggsci")
 rm(list=ls())
 
-pdf("CATTPlot.pdf", width=10, height=7)
+{pdf("CATTPlot.pdf", width=10, height=7)
 par(mar=c(1,3,1,1), mfrow=c(2,1))
 
 # Compute group proportions
@@ -96,17 +96,6 @@ text(x=ratio*14-1, y=att[14]+0.01, labels="Non-Dem", font=2)
 # (2) NEW MEXICO CONTROLS
 ################################################################################################
 
-
-# Compute group proportions
-# dat <- read_csv("Stack_Colorado_NC_2012_2016_imputed.csv", col_types = cols(VoterID = col_character()))
-# datCO <- dat %>% filter(Place==1); rm(dat)
-# datCO %>% group_by(voted2010) %>% summarise(n = n()) %>% mutate(freq = n / sum(n))
-# datCO %>% group_by(estrace) %>% summarise(n = n()) %>% mutate(freq = n / sum(n))
-# datCO %>% group_by(female) %>% summarise(n = n()) %>% mutate(freq = n / sum(n))
-# datCO %>% group_by(democrat) %>% summarise(n = n()) %>% mutate(freq = n / sum(n))
-# datCO %>% mutate(ageGR = ifelse(age < 35, 0, ifelse(age>=65, 2,1))) %>%
-#           group_by(ageGR) %>% summarise(n = n()) %>% mutate(freq = n / sum(n))
-
 prop = c(1, 0.848, 0.152,                # All, frequent, infrequent
          0.156, 0.618, 0.226,            # U35, 35-65, O65 
          0.730, 0.102, 0.105, 0.0536,    # White, black, hispanic, asian
@@ -116,8 +105,8 @@ prop = c(1, 0.848, 0.152,                # All, frequent, infrequent
 prop <- sqrt(prop)
 
 # CATTs from Table D.1 on Online Appendix 
-att <- c(0.052, 0.079, 0.051, 0.024, 0.060, 0.069,
-         0.059, 0.063, 0.024, 0.073, 0.052, 0.056, 0.037, 0.060)
+att <- c(0.051, 0.075, 0.043, 0.016, 0.056, 0.066,
+         0.050, 0.064, 0.042, 0.061, 0.046, 0.052, 0.028, 0.059)
 se  <- c(0.003, 0.002, 0.002, 0.003, 0.003, 0.002, 
          0.003, 0.006, 0.002, 0.006, 0.003, 0.003, 0.003, 0.003)
 
@@ -174,7 +163,7 @@ text(x=ratio*14-1, y=att[14]+0.01, labels="Non-Dem", font=2)
 
 
 dev.off()
-
+}
 
 
 
