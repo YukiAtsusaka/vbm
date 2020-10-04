@@ -7,46 +7,50 @@
 ################################################################################################
 
 ##################################################s##############################################
-(1) SIMPLE RANDOM SAMPLING
+# (1) SIMPLE RANDOM SAMPLING
  rm(list=ls())
  library(tidyverse)
 
-# #IDENTIFICATINO FOR voted2010 variable
-# dat <- read_csv("Stack_Colorado_NM_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
-# dat <- dat %>%
-#          dplyr::select(-n) %>%
-#          filter(is.na(female)==F & is.na(democrat)==F &
-#                 is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
-# 
-#  dat %>% filter(State=="Colorado") %>% dim()
-#  dat %>% filter(State!="Colorado") %>% dim()
-#  dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
-#  dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim()
-# 
-# # IMPUTED 8/6/2020
-#  m <- glm(voted2010 ~ female+democrat+age+estrace+State, family=binomial,dat)
-#  pred.val <- predict(m, dat[,c(2,3,4,5,6)], type="response")
-#  pred_voted2010 <- ifelse(pred.val >=0.5, 1,0)
-# 
-#  dat.imp  <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, pred_voted2010))
-#  dat.imp2 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 0)) # Lowest Value
-#  dat.imp3 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 1)) # Highest Value
-# 
-#  mean(dat.imp$voted2010==dat.imp2$voted2010) #  0.6507874
-#  mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.9476109
-#  mean(dat.imp$voted2010) #[1] 0.7153486
-#  mean(dat.imp2$voted2010) #[1] 0.3661361
-#  mean(dat.imp3$voted2010) #[1] 0.7677377
-# 
-#  write_csv(dat.imp, "Stack_Colorado_NM_2012_2016_imputed.csv")
-#  write_csv(dat.imp2, "Stack_Colorado_NM_2012_2016_imputed_Low.csv")
-#  write_csv(dat.imp3, "Stack_Colorado_NM_2012_2016_imputed_Up.csv")
+setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
+#IDENTIFICATINO FOR voted2010 variable
+dat <- read_csv("Stack_Colorado_NM_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+mean(dat$n, na.rm=T) # 2 OK
+dat <- dat %>%
+         dplyr::select(-n) %>%
+         filter(is.na(female)==F & is.na(democrat)==F &
+                is.na(age)==F & is.na(estrace)==F) # 16583508 # A lot of people dropped
+
+ dat %>% filter(State=="Colorado") %>% dim()
+ dat %>% filter(State!="Colorado") %>% dim()
+ dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
+ dat %>% filter(State!="Colorado" & !is.na(voted2010)) %>% dim()
+
+# IMPUTED 8/6/2020
+ m <- glm(voted2010 ~ female+democrat+age+estrace+State, family=binomial,dat)
+ pred.val <- predict(m, dat[,c(2,3,4,5,6)], type="response")
+ pred_voted2010 <- ifelse(pred.val >=0.5, 1,0)
+
+ dat.imp  <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, pred_voted2010))
+ dat.imp2 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 0)) # Lowest Value
+ dat.imp3 <- dat %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 1)) # Highest Value
+
+ mean(dat.imp$voted2010==dat.imp2$voted2010) #  0.6507874
+ mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.9476109
+ mean(dat.imp$voted2010) #[1] 0.7153486
+ mean(dat.imp2$voted2010) #[1] 0.3661361
+ mean(dat.imp3$voted2010) #[1] 0.7677377
+
+ write_csv(dat.imp, "Stack_Colorado_NM_2012_2016_imputed.csv")
+ write_csv(dat.imp2, "Stack_Colorado_NM_2012_2016_imputed_Low.csv")
+ write_csv(dat.imp3, "Stack_Colorado_NM_2012_2016_imputed_Up.csv")
+
+ 
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 rm(list=ls())
 library(tidyverse)
 
-dat <- read_csv("Stack_Colorado_NM_2012_2016_imputed_Up.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+dat <- read_csv("Stack_Colorado_NM_2012_2016_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
 datCO <- dat %>% filter(Place==1)
 datNM <- dat %>% filter(Place==0)
@@ -291,11 +295,11 @@ library(ebal)
 library(cobalt)
 library(MatchIt)
 library(Hmisc)
-rm(list=ls())
+rm(list=ls());gc();gc()
 
 
-# CURRENTLY BASED ON IMPUTATION "UP"/8/18/2020
-dat_s <- read_csv("Stack_Colorado_NM_2012_2016_Sample_Infrequent.csv",     
+# CURRENTLY BASED ON IMPUTATION "LOGISTIC"/8/18/2020
+dat_s <- read_csv("Stack_Colorado_NM_2012_2016_Sample_Republican.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE
@@ -304,10 +308,11 @@ dat_s16 <- dat_s %>% filter(Time==1)   # For TWO-YEAR DATA
 # CREATING COVARIATE MATRIX
 variable_names2 <- c("voted2010", "female", "age", "estrace", "democrat")   # ALL DATA
 variable_names2 <- c("female", "age", "estrace", "democrat")   # FOR FREQUENT VOTER DATA
+variable_names2 <- c("voted2010","female", "age", "estrace", "democrat")   # FOR AGE SPLIT DATA + ALL DATA
+
 variable_names2 <- c("voted2010", "female", "age", "democrat") # FOR RACE SPLIT DATA
 variable_names2 <- c("voted2010","age", "democrat", "estrace") # FOR GENDER SPLIT DATA
 variable_names2 <- c("voted2010","female", "age", "estrace")   # FOR PARTY SPLIT DATA
-variable_names2 <- c("voted2010","female", "age", "estrace", "democrat")   # FOR AGE SPLIT DATA + ALL DATA
 
 
 
@@ -324,7 +329,7 @@ match.dat <- match.dat %>% left_join(w, by="VoterID")
 
 # COVARIATE BALANCE
 love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), threshold = .1)
-# Save by Porrail (8.00 x 5.00)
+# Save by Portrait (8.00 x 5.00)
 ################################################################################################
 
 
@@ -340,6 +345,9 @@ summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(f
 # Frequent and Infrequent
 summary(lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
 
+# Age Low, Mid, High
+summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
+
 # White, Black, Hispanic, Asian
 summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
 
@@ -348,11 +356,6 @@ summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(d
 
 # Dem, non-Dem
 summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+age, match.dat, weights=weights))$coef[2,1:2]
-
-# Age Low, Mid, High
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
-
-
 
 
 ################################################################################################
