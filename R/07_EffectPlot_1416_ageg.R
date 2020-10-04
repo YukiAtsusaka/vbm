@@ -62,8 +62,8 @@ mtext("Estimated Effect of VBM", side=2, line=2.1, cex=0.8)
 # New MEXICO CONTROL  (LOGISTIC REGRESSION)
 ################################################################################################
 
-catt <- c(0.116, 0.124, 0.051, 0.079 ) # 14-Freq, 14-Infreq, 16-Freq, 16-Infreq
-se  <- c(0.002, 0.001, 0.002, 0.002) # Freq, Infreq
+catt <- c(0.025, 0.127, 0.043, 0.075) # 14-Infreq, 14-freq, 16-Infreq, 16-freq
+se  <- c(0.002, 0.002, 0.002, 0.002) # Infreq, Freq
 
 plot(y ~ x, type="n", xlab="", ylab="", xaxt="n")
 abline(h=0, lty=2)
