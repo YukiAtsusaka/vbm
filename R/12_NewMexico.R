@@ -9,17 +9,32 @@
 ################################################################################################
 # (1) RACE CODING FOR NEW MEXICO DATA
 ################################################################################################
-rm(list=ls())
+setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
+
+rm(list=ls()); gc(); gc()
 library(tidyverse)
 library(haven)
 library(wru)
 
-setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
+#setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 # dat <- read_dta("new mexico voter file 2017.dta")
+# zip <- read_csv("NM_ZipCounty.csv")
+# ccode <- read_csv("NM_CountyCode.csv")  
+# ccode$county[nchar(ccode$county)==2] <- paste("0", ccode$county[nchar(ccode$county)==2], sep="")
+# ccode$county[nchar(ccode$county)==1] <- paste("00", ccode$county[nchar(ccode$county)==1], sep="")
 # 
 # dat2 <- dat %>% mutate(surname = text_name_last,
-#                        voterID = text_registrant_id) %>%
-#         dplyr::select(surname, voterID)
+#                        voterID = text_registrant_id,
+#                        zip=text_res_zip5,
+#                        state="NM") %>%
+#         left_join(zip, by="zip") %>%
+#         left_join(ccode, by="name") %>%
+#         dplyr::select(surname, voterID, county, state)
+# 
+# #length(unique(dat2$county)) # Check, we have 33 counties
+# #unique(sort(ccode$name)) == unique(sort(zip$name)) # Check
+# #mean(!is.na(dat2$county))
+# dat2 <- dat2 %>% mutate(county= ifelse(is.na(county), "049", county))
 # write_csv(dat2, "NewMexico_surname.csv")
 
 
@@ -27,11 +42,19 @@ df = read_csv("NewMexico_surname.csv")
 df$surname = gsub("[\U4E00-\U9FFF\U3000-\U303F]", "", df$surname) # Drop Error-based Chinese Letter
 
 ############################################################################
-# PREDICT RACE BASED ON SURNAME-ONLY METHOD
-out <- predict_race(df, surname.year=2010, surname.only=T) 
+# PREDICT RACE BASED ON SURNAME AND COUNTY
+Cen.county <- get_census_data(key="6ed7597beb9cace157dc97dbf52976dfbdf2c420",
+                             states="NM",age=F,sex=F,census.geo="county")
+out <- predict_race(df, surname.year=2010, 
+                    census.geo = "county", census.data = Cen.county) 
 ############################################################################
 
- est.c <- out[, 3:7] # ONLY EXTRACT RACE PROBABILITIES TO SPEED UP ALGORITHM
+#############################################################################
+## PREDICT RACE BASED ON SURNAME-ONLY METHOD
+#out <- predict_race(df, surname.year=2010, surname.only=T) 
+#############################################################################
+
+ est.c <- out[, 5:9] # ONLY EXTRACT RACE PROBABILITIES TO SPEED UP ALGORITHM
  est.c$highest <- as.numeric(apply(est.c, 1, which.max)) # WHICH COLUMN HAS THE HIGHEST PROBABILITY?
  est.c$race <- ifelse(est.c$highest==1, "White", NA)     # ASSIGN MOST LIKELY RACE
  est.c$race[is.na(est.c$race)==T] <- ifelse(est.c$highest[is.na(est.c$race)==T]==2, "Black", NA)
@@ -55,7 +78,7 @@ write_csv(df, "NewMexico_Race.csv")
 ################################################################################################
 # (2) DATA BUILDING FOR NEW MEXICO
 ################################################################################################
-rm(list=ls())
+rm(list=ls()); gc(); gc()
 library(tidyverse)
 library(haven)
 library(lubridate)
@@ -123,7 +146,7 @@ nm12_16 <- rbind(nm12,nm16)
 nm12_14 <- rbind(nm12,nm14)
 
 write_csv(nm12_16, "Stack_NM_2012_2016.csv")
-write_csv(nm12_16, "Stack_NM_2012_2014.csv")
+write_csv(nm12_14, "Stack_NM_2012_2014.csv")
 
 # CHECK
 #> table(dat$voting_method_pr2016)
