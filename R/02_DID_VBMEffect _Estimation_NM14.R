@@ -327,7 +327,7 @@ rm(list=ls());gc(); gc()
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
 # CURRENTLY BASED ON IMPUTATION "LOGIT/10/3/2020
-dat_s <- read_csv("Stack_Colorado_NM_2012_2014_Sample_Frequent.csv",     
+dat_s <- read_csv("Stack_Colorado_NM_2012_2014_Sample_Infrequent.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE

@@ -29,9 +29,7 @@ v <- v10 %>% mutate(VoterID = as.character(voter_id),
 
   dat.m <- dat %>% left_join(v, by="VoterID")
   
-  
-  
-  #
+    #
  datCO <- dat %>% filter(State=="Colorado") %>% dim()
  datNC <- dat %>% filter(State!="Colorado") %>% dim()
  datCO.m <- dat %>% filter(State=="Colorado" & !is.na(voted2010)) %>% dim()
@@ -49,9 +47,9 @@ v <- v10 %>% mutate(VoterID = as.character(voter_id),
 #
 # mean(dat.imp$voted2010==dat.imp2$voted2010) # 0.8515118
 # mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.991069
-# mean(dat.imp$voted2010) #[1] 0.5470006
-# mean(dat.imp2$voted2010) #[1] 0.3985124
-# mean(dat.imp3$voted2010) #[1] 0.5559316
+# mean(dat.imp$voted2010[dat.imp$Intervene==1]) #[1] 0.5470006
+# mean(dat.imp2$voted2010[dat.imp$Intervene==1]) #[1] 0.3985124
+# mean(dat.imp3$voted2010[dat.imp$Intervene==1]) #[1] 0.5559316
 #
 # write_csv(dat.imp, "Stack_Colorado_NC_2012_2016_imputed.csv")
 # write_csv(dat.imp2, "Stack_Colorado_NC_2012_2016_imputed_Low.csv")
@@ -63,6 +61,8 @@ dat <- read_csv("Stack_Colorado_NC_2012_2016_imputed.csv", col_types = cols(Vote
 datCO <- dat %>% filter(Place==1)
 datNC <- dat %>% filter(Place==0)
 
+mean(datCO$voted2010[datCO$Time==1])
+mean(datNC$voted2010[datNC$Time==1])
 
 
 # SIMPLE RANDOM SAMPLING (All Voters) ==================================================#

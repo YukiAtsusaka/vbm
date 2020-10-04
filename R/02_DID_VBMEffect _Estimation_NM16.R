@@ -47,13 +47,17 @@ dat <- dat %>%
 
  
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
-rm(list=ls())
+rm(list=ls());gc();gc()
 library(tidyverse)
 
 dat <- read_csv("Stack_Colorado_NM_2012_2016_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 
 datCO <- dat %>% filter(Place==1)
 datNM <- dat %>% filter(Place==0)
+
+mean(datCO$voted2010[datCO$Time==1])
+mean(datNM$voted2010[datNM$Time==1])
+
 
 # SIMPLE RANDOM SAMPLING (All Voters) ==================================================#
 set.seed(1029501)
