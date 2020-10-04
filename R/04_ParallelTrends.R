@@ -45,7 +45,7 @@ xtick <- seq(from=2000, to=2018, by=2)
 
 
 {
-pdf("Paralell.pdf", width=12, height=5.5)
+pdf("Parallel.pdf", width=12, height=5.5)
 par(mar=c(2,2,1,0.5), oma = c(0,3,2,0) + 0.1, mfrow=c(1,2))
 
 # PLOT FOR NORTH CAROLINA
