@@ -94,6 +94,12 @@ library(tidyverse)
 #              distinct(voter_id, .keep_all=T)     # 3778507      # Drop duplicates [A LOT, needs check]
 #write_csv(sup_co2016, "co2016_sup.csv")
 
+# co2010 <- read_csv("2010 Reg Co Voters and Vote History.dta")
+# voted2010 <- co2010 %>% mutate(VoterID=voted_id6) %>%
+#              dplyr::select(VoterID, voted2010)
+# write_csv(voted2010, "Colorado2010_turnout.csv")
+
+
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
 # Read Data
@@ -131,11 +137,11 @@ co12_16 <- co2012_sl %>%
            add_count(VoterID) %>%
            filter(n==2)
 
-co2010 <- read_csv("Colorado_voted2010.csv") # Original data
-
+#co2010 <- read_csv("Colorado_voted2010.csv") # Original data
 # 10/3/2020 Use Bob'S updated data
-#co2010 <- read_csv("2010 Reg Co Voters and Vote History.dta")
-# This file is broken
+
+co2010 <- read_csv("Colorado2010_turnout.csv")
+
 
 co12_16 <- co12_16 %>% left_join(co2010, by="VoterID") # 4484352
 
