@@ -147,8 +147,26 @@ co12_16 <- co12_16 %>% left_join(co2010, by="VoterID") # 4494348
 mean(!is.na(co12_16$voted2010)) # 0.9074259
 mean(co12_16$voted2010, na.rm=T) # 0.6853199 more reasonable
 
-write_csv(co12_16, "Stack_Colorado_2012_2016.csv")
 
+#
+m <- glm(voted2010 ~ female+democrat+age+estrace, family=binomial,co12_16)
+
+pred.val <- predict(m, co12_16[,c(2,3,4,5)], type="response")
+pred_voted2010 <- ifelse(pred.val >=0.5, 1,0)
+
+dat.imp  <- co12_16 %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, pred_voted2010))
+dat.imp2 <- co12_16 %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 0)) # Lowest Value
+dat.imp3 <- co12_16 %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 1)) # Highest Value
+
+mean(dat.imp$voted2010==dat.imp2$voted2010) # 0.9468188
+mean(dat.imp$voted2010==dat.imp3$voted2010) # 0.9606072
+mean(dat.imp$voted2010[dat.imp$Year==2016]) #[1] 0.6802455
+mean(dat.imp2$voted2010[dat.imp2$Year==2016]) #[1] 0.6218771
+mean(dat.imp3$voted2010[dat.imp3$Year==2016]) #[1] 0.7144511
+
+write_csv(dat.imp, "Stack_Colorado_2012_2016_imputed.csv")
+write_csv(dat.imp2, "Stack_Colorado_2012_2016_imputed_Low.csv")
+write_csv(dat.imp3, "Stack_Colorado_2012_2016_imputed_Up.csv")
 
 
 # # FOR THE EXPANDED POPULATION
@@ -175,34 +193,72 @@ write_csv(co12_16, "Stack_Colorado_2012_2016.csv")
 rm(list=ls());gc(); gc()
 library(tidyverse)
 library(magrittr)
-stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
 stack_nc <- read_csv("Stack_NC_2012_2016.csv")       # 12089156
-stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
 stack_nc <- stack_nc %>% select(-voted2012)
 
+# LOGISTIC IMPUTATION
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed.csv") # 4494532
+stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
 stack_co_nc <- union_all(stack_co, stack_nc) %>%
                mutate(Time = ifelse(Year==2016, 1, 0),
                       Place = ifelse(State=="Colorado", 1,0),
                       Intervent = Time*Place) # 18367514
+write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2016_imputed.csv")
 
-write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2016.csv")
+# LOWEST VALUE IMPUTATION
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed_Low.csv") # 4494532
+stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
+stack_co_nc <- union_all(stack_co, stack_nc) %>%
+               mutate(Time = ifelse(Year==2016, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 18367514
+write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2016_imputed_Low.csv")
+
+
+# HIGHEST VALUE IMPUTATION
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed_Up.csv") # 4494532
+stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
+stack_co_nc <- union_all(stack_co, stack_nc) %>%
+               mutate(Time = ifelse(Year==2016, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 18367514
+write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2016_imputed_Up.csv")
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-# STACKING TREATMENT AND CONTROL STATES (II) 8/6/2020
+# STACKING TREATMENT AND CONTROL STATES (II) 8/6/2020, 10/4/2020 updated
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 # MAIN POPULATION OF INTEREST
 rm(list=ls());gc();gc()
 library(tidyverse)
-stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
 stack_nm <- read_csv("Stack_NM_2012_2016.csv")       # 1616984
 
+
+# LOGISTIC IMPUTATION
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed.csv") # 4494532
 stack_co_nm <- union_all(stack_co, stack_nm) %>%
                mutate(Time = ifelse(Year==2016, 1, 0),
                       Place = ifelse(State=="Colorado", 1,0),
                       Intervent = Time*Place) # 6111336
+write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2016_imputed.csv")
 
-write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2016.csv")
+
+# LOWEST VALUE IMPUTATION
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed_Low.csv") # 4494532
+stack_co_nm <- union_all(stack_co, stack_nm) %>%
+               mutate(Time = ifelse(Year==2016, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 6111336
+write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2016_imputed_Low.csv")
+
+
+# HIGHEST VALUE IMPUTATION
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed_Up.csv") # 4494532
+stack_co_nm <- union_all(stack_co, stack_nm) %>%
+               mutate(Time = ifelse(Year==2016, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 6111336
+write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2016_imputed_Up.csv")
 #########################################################################################################
 
 #########################################################################################################
@@ -251,18 +307,11 @@ write_csv(dat2, "NorthCarolina2014.csv")
 # STACKING TREATMENT AND CONTROL STATES (III) 8/14/2020, 8/18/2020
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 # MAIN POPULATION OF INTEREST
-rm(list=ls())
+rm(list=ls()); gc(); gc()
 library(tidyverse)
-stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
 co2014 <- read_csv("Colo2014.csv")                   # 2293221
 co2014 <- co2014 %>% arrange(VoterID) %>% distinct(VoterID, voted2014)# Drop duplicates
 
-stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
-stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
-                                Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
-            dplyr::select(-voted2014)
-
-# START FROM HERE NEXT TIME 8/14/2020
 stack_nc <- read_csv("Stack_NC_2012_2016.csv") # 12089156
 
 nc2014 <- read_csv("NorthCarolina2014.csv")    # 2938955 
@@ -275,16 +324,53 @@ stack_nc <- stack_nc %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # R
             dplyr::select(-voted2014)
 
 
-stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
 stack_nc <- stack_nc %>% select(-voted2012)
 
+
+# LOGISTIC IMPUTATION
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed.csv") # 4494532
+stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
+stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
+                                Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
+            dplyr::select(-voted2014)
+stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
 
 stack_co_nc <- union_all(stack_co, stack_nc) %>%
                mutate(Time = ifelse(Year==2014, 1, 0),
                       Place = ifelse(State=="Colorado", 1,0),
                       Intervent = Time*Place) # 16583508
+write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2014_imputed.csv")
 
-write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2014.csv")
+
+
+# LOWEST VALUE IMPUTATION
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed_Low.csv") # 4494532
+stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
+stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
+                                Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
+            dplyr::select(-voted2014)
+stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
+
+stack_co_nc <- union_all(stack_co, stack_nc) %>%
+               mutate(Time = ifelse(Year==2014, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 16583508
+write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2014_imputed_Low.csv")
+
+
+# HIGHEST VALUE IMPUTATION
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed_Up.csv") # 4494532
+stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
+stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
+                                Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
+            dplyr::select(-voted2014)
+stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
+
+stack_co_nc <- union_all(stack_co, stack_nc) %>%
+               mutate(Time = ifelse(Year==2014, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 16583508
+write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2014_imputed_Up.csv")
 
 
 
@@ -292,30 +378,63 @@ write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2014.csv")
 # STACKING TREATMENT AND CONTROL STATES (III) 8/14/2020, 8/18/2020
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 # MAIN POPULATION OF INTEREST
+
 rm(list=ls());gc(); gc()
-library(tidyverse)
-stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
+#library(tidyverse)
+stack_nm <- read_csv("Stack_NM_2012_2014.csv") # 2006024
+stack_nm <- stack_nm %>% mutate(VoterID = as.character(VoterID))
 co2014 <- read_csv("Colo2014.csv")                   # 2293221
 co2014 <- co2014 %>% arrange(VoterID) %>% distinct(VoterID, voted2014)# Drop duplicates
 
+
+# LOGISTIC IMPUTATION
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed.csv") # 4494532
 stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
 stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
                                 Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
             dplyr::select(-voted2014)
-
-# START FROM HERE NEXT TIME 8/14/2020
-stack_nm <- read_csv("Stack_NM_2012_2014.csv") # 2006024
-
 stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
-stack_nm <- stack_nm %>% mutate(VoterID = as.character(VoterID))
 
 stack_co_nm <- union_all(stack_co, stack_nm) %>%
                mutate(Time = ifelse(Year==2014, 1, 0),
                       Place = ifelse(State=="Colorado", 1,0),
                       Intervent = Time*Place) # 16583508
 
-write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2014.csv")
+write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2014_imputed.csv")
 
+
+
+# LOWEST VALUE IMPUTATION
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed_Low.csv") # 4494532
+stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
+stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
+                                Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
+            dplyr::select(-voted2014)
+stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
+
+stack_co_nm <- union_all(stack_co, stack_nm) %>%
+               mutate(Time = ifelse(Year==2014, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 16583508
+
+write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2014_imputed_Low.csv")
+
+
+
+# LOWEST VALUE IMPUTATION
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed_Up.csv") # 4494532
+stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
+stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
+                                Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
+            dplyr::select(-voted2014)
+stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
+
+stack_co_nm <- union_all(stack_co, stack_nm) %>%
+               mutate(Time = ifelse(Year==2014, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 16583508
+
+write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2014_imputed_Up.csv")
 
 #########################################################################################################
 # # SIDE-POPULATION OF INTEREST
