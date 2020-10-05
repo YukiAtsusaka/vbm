@@ -24,7 +24,7 @@ ls=2
 # NORTH CAROLINA CONTROL (LOGISTIC REGRESSION)
 ################################################################################################
 
-catt <- c(0.101, 0.070, 0.081, 0.004) # 14-Freq, 14-Infreq, 16-Freq, 16-Infreq
+catt <- c(0.110, 0.093, 0.048, 0.075) # 14-Freq, 14-Infreq, 16-Freq, 16-Infreq
 se  <- c(0.003, 0.002, 0.003, 0.002) # Freq, Infreq
 
 y <- seq(from=-0.04, to=0.17, length=101)

@@ -14,7 +14,7 @@
 library(tidyverse)
 rm(list=ls())
 
-pdf("CATTPlot_1416.pdf", width=6, height=5)
+{pdf("CATTPlot_1416.pdf", width=6, height=5)
 par(mar=c(2,2,1,0.5), oma = c(0,3,2,0) + 0.1, mfrow=c(2,2))
 
 cs=1.5
@@ -23,13 +23,13 @@ cole <- "black"
 cole2 <- "firebrick3"
 
 ################################################################################################
-# NORTH CAROLINA CONTROL (LOGISTIC REGRESSION)
+# NORTH CAROLINA CONTROL (FREQUENCY OF VOTING)
 ################################################################################################
 
-catt <- c(0.070, 0.101, 0.004, 0.081) # 14-Freq, 14-Infreq, 16-Freq, 16-Infreq
-se  <- c(0.002, 0.003, 0.002, 0.003) # Freq, Infreq
+catt <- c(0.093, 0.110, 0.075, 0.048) # 14-Infreq, 14-freq, 16-Infreq, 16-freq
+se  <- c(0.002, 0.003, 0.002, 0.003) # Infreq, Freq
 
-y <- seq(from=0, to=0.13, length=101)
+y <- seq(from=0, to=0.14, length=101)
 x <- seq(from=0, to=1, length=101)
 
 plot(y ~ x, type="n", xlab="", ylab="", xaxt="n")
@@ -59,11 +59,11 @@ mtext("Estimated Effect of VBM", side=2, line=2.1, cex=0.8)
 
 
 ################################################################################################
-# New MEXICO CONTROL  (LOGISTIC REGRESSION)
+# New MEXICO CONTROL (FREQUENCY OF VOTING)
 ################################################################################################
 
-catt <- c(0.025, 0.127, 0.043, 0.075) # 14-Infreq, 14-freq, 16-Infreq, 16-freq
-se  <- c(0.002, 0.002, 0.002, 0.002) # Infreq, Freq
+catt <- c(0.065, 0.134, 0.098, 0.042) # 14-Infreq, 14-freq, 16-Infreq, 16-freq
+se  <- c(0.003, 0.002, 0.002, 0.002) # Infreq, Freq
 
 plot(y ~ x, type="n", xlab="", ylab="", xaxt="n")
 abline(h=0, lty=2)
@@ -90,10 +90,10 @@ mtext("New Mexico voters as control units", side=3, line=0.5, cex=0.9)
 
 
 ################################################################################################
-# NORTH CAROLINA CONTROL (LOGISTIC REGRESSION)
+# NORTH CAROLINA CONTROL (AGE GROUP)
 ################################################################################################
 
-catt <- c(0.095,0.079,0.124, 0.037, 0.046, 0.105) # 14-Y, 14-M, 14-O, 16-Y, 16-M, 16-O
+catt <- c(0.086,0.093,0.129, 0.042, 0.036, 0.101) # 14-Y, 14-M, 14-O, 16-Y, 16-M, 16-O
 se   <- c(0.004,0.003,0.003, 0.004, 0.003, 0.003)  # 14-Y, 14-M, 14-O, 16-Y, 16-M, 16-O
 
 plot(y ~ x, type="n", xlab="", ylab="", xaxt="n")
@@ -122,11 +122,11 @@ legend(-0.02,0.05, pch = c(6, 16, 17), cex = 1, bty = "n",
 mtext("Estimated Effect of VBM", side=2, line=2.1, cex=0.8)
 
 ################################################################################################
-# NEW MEXICO (LOGISTIC REGRESSION)
+# NEW MEXICO (AGE GROUP)
 ################################################################################################
 
-catt <- c(0.107,0.094,0.102, 0.024, 0.060, 0.069) # 14-Y, 14-M, 14-O, 16-Y, 16-M, 16-O
-se   <- c(0.003,0.003,0.005, 0.003, 0.003, 0.002)  # 14-Y, 14-M, 14-O, 16-Y, 16-M, 16-O
+catt <- c(0.093,0.120,0.118, 0.068, 0.052, 0.067) # 14-Y, 14-M, 14-O, 16-Y, 16-M, 16-O
+se   <- c(0.004,0.003,0.003, 0.003, 0.003, 0.002)  # 14-Y, 14-M, 14-O, 16-Y, 16-M, 16-O
 
 
 plot(y ~ x, type="n", xlab="", ylab="", xaxt="n")
@@ -151,12 +151,7 @@ axis(1, at = seq(0.75, 1, by = 1), las=1, labels="2016" ,cex.axis=1,  mgp=c(0,0.
 
 legend(-0.02,0.05, pch = c(6, 16, 17), cex = 1, bty = "n", legend = c("Under 35", "35-65", "Over 65"))
 
-
-
-
-
-
-dev.off()
+dev.off()}
 
 
 ################################################################################################
