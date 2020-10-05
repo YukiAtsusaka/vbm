@@ -20,8 +20,17 @@ dat <- dat %>% dplyr::select(-n)
 datCO <- dat %>% filter(Place==1)
 datNC <- dat %>% filter(Place==0)
 
-mean(datCO$voted2010[datCO$Time==1])
-mean(datNC$voted2010[datNC$Time==1])
+# TURNOUT BY STATE AND YEAR
+mean(datCO$Vote[datCO$Year==2012]) # CO 2012 (0.8300265)
+mean(datCO$Vote[datCO$Year==2016]) # CO 2016 (0.8127234)
+mean(datNC$Vote[datNC$Year==2012]) # NC 2012 (0.6944402)
+mean(datNC$Vote[datNC$Year==2016]) # NC 2016 (0.6180653)
+
+# COMPLETE CASES
+mean(!is.na(datCO$Vote[datCO$Year==2012])) # 1 OK
+mean(!is.na(datCO$Vote[datCO$Year==2016])) # 1 OK
+mean(!is.na(datNC$Vote[datNC$Year==2012])) # 1 OK
+mean(!is.na(datNC$Vote[datNC$Year==2016])) # 1 OK
 
 
 # SIMPLE RANDOM SAMPLING (All Voters) ==================================================#
