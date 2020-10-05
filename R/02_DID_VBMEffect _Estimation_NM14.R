@@ -9,82 +9,30 @@
 ##################################################s##############################################
 # (1) SIMPLE RANDOM SAMPLING
 rm(list=ls())
- library(tidyverse);gc();gc()
-#
- setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
-
-# LOGIT IMPUTATION
-
-########################################################################################################## 
-# In this imputation file, there are mltiple voters who appear twice with different values of voted2010
-# 10/3/2020
-##########################################################################################################
-  
- dt <- read_csv("Stack_Colorado_NM_2012_2016_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
- dt.s <- dt %>% distinct(VoterID, State, voted2010);rm(dt) # READY TO MERGE
- dt.s$VoterID[dt.s$State=="Colorado"] <- paste0("c", dt.s$VoterID[dt.s$State=="Colorado"])  
- dt.s <- dt.s %>% add_count(VoterID)
- dt.s <- dt.s %>% filter(n==1) %>% dplyr::select(-n)
- 
- dat <- read_csv("Stack_Colorado_NM_2012_2014.csv", col_types = cols(VoterID = col_character())) # N=6500376
- dat$tag[dat$Year==2014] <- ifelse(is.na(dat$Vote[dat$Year==2014]), 1,0)
- dat <- dat %>% group_by(VoterID,State) %>% 
-        tidyr::fill(tag, .direction = "downup") %>% ungroup()
-
-mean(!is.na(dat$tag)) # This must be 1
-mean(!is.na(dat$Vote)) # This may not be 1
-  dat <- dat %>% filter(tag==0) # N=5635202
- mean(!is.na(dat$Vote)) # This must be 1
-
-  
- dat$VoterID[dat$State=="Colorado"] <- paste0("c", dat$VoterID[dat$State=="Colorado"])  
- dat.m <- dat %>% left_join(dt.s, by="VoterID") 
- dat.m$VoterID[dat.m$State=="Colorado"] <- gsub("[a-zA-Z ]", "",dat.m$VoterID[dat.m$State=="Colorado"])  
- dat.m$age[dat.m$State=="Colorado" & dat.m$Year==2014] <- dat.m$age[dat.m$State=="Colorado" & dat.m$Year==2014] - 2
-
- dat.m <- dat.m %>% mutate(voted2010 = ifelse(!is.na(voted2010.x), voted2010.x, voted2010.y)) %>%
-          dplyr::select(-c(voted2010.x, voted2010.y, n))
-write_csv(dat.m, "Stack_Colorado_NM_2012_2014_imputed.csv")  
- 
- 
-# PARTIAL IDENTIFICATINO I
-rm(list=ls());gc();gc()
- dt <- read_csv("Stack_Colorado_NM_2012_2016_imputed_Low.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
- dt.s <- dt %>% distinct(VoterID, voted2010);rm(dt) # READY TO MERGE
- 
- dat <- read_csv("Stack_Colorado_NM_2012_2014.csv", col_types = cols(VoterID = col_character()))
- dat.m <- dat %>% left_join(dt.s, by="VoterID") 
- dat.m <- dat.m %>% mutate(voted2010 = ifelse(!is.na(voted2010.x), voted2010.x, voted2010.y)) %>%
-          dplyr::select(-c(voted2010.x, voted2010.y, n)) %>%
-          filter(!is.na(Vote))
-write_csv(dat.m, "Stack_Colorado_NM_2012_2014_imputed_Low.csv")  
-
-
-# PARTIAL IDENTIFICATION II
-rm(list=ls());gc();gc()
- dt <- read_csv("Stack_Colorado_NM_2012_2016_imputed_Up.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
- dt.s <- dt %>% distinct(VoterID, voted2010);rm(dt) # READY TO MERGE
- 
- dat <- read_csv("Stack_Colorado_NM_2012_2014.csv", col_types = cols(VoterID = col_character()))
- dat.m <- dat %>% left_join(dt.s, by="VoterID") 
- dat.m <- dat.m %>% mutate(voted2010 = ifelse(!is.na(voted2010.x), voted2010.x, voted2010.y)) %>%
-          dplyr::select(-c(voted2010.x, voted2010.y, n)) %>%
-          filter(!is.na(Vote))
-write_csv(dat.m, "Stack_Colorado_NM_2012_2014_imputed_Up.csv")  
-
-
-##################################################s##############################################
-# SIMPLE RANDOM SAMPLE
-##################################################s##############################################
+library(tidyverse);gc();gc()
 
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
-rm(list=ls()); gc(); gc()
-library(tidyverse)
 
 dat <- read_csv("Stack_Colorado_NM_2012_2014_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+dat <- dat %>% dplyr::select(-n)
+dat$age[dat$Year==2014] <- dat$age[dat$Year==2012] + 2
+#dat$Vote[is.na(dat$Vote)] <- 1 # This leads to 0.8386044 (LESS PLAUSIBLE)
+dat$Vote[is.na(dat$Vote)] <- 0  # This leads to 0.6461022 (MORE PLAUSIBLE)
 
 datCO <- dat %>% filter(Place==1)
 datNM <- dat %>% filter(Place==0)
+
+# TURNOUT BY STATE AND YEAR
+mean(datCO$Vote[datCO$Year==2012]) # CO 2012 (0.8300265)
+mean(datCO$Vote[datCO$Year==2014]) # CO 2014 (0.6461022) # LOWEST VALUE IMPUTATION
+mean(datNM$Vote[datNM$Year==2012]) # NM 2012 (0.6934513)
+mean(datNM$Vote[datNM$Year==2014]) # NM 2014 (0.4536366)
+
+mean(!is.na(datCO$Vote[datCO$Year==2012])) # 1 OK
+mean(!is.na(datCO$Vote[datCO$Year==2014])) # 1 OK
+mean(!is.na(datNM$Vote[datNM$Year==2012])) # 1 OK
+mean(!is.na(datNM$Vote[datNM$Year==2014])) # 1 OK
+
 
 # SIMPLE RANDOM SAMPLING (All Voters) ==================================================#
 set.seed(1029501)
@@ -327,7 +275,7 @@ rm(list=ls());gc(); gc()
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
 # CURRENTLY BASED ON IMPUTATION "LOGIT/10/3/2020
-dat_s <- read_csv("Stack_Colorado_NM_2012_2014_Sample_Infrequent.csv",     
+dat_s <- read_csv("Stack_Colorado_NM_2012_2014_Sample_Republican.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE
@@ -361,10 +309,7 @@ love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), thr
 ################################################################################################
 
 
-3620569/(873783  + 3620569)
-1029466/(976558 + 1029466)
-
-################################################################################################
+###############################################################################################
 # (3) TWO-YEAR PRE-STRATIFIED AND PREPROCESSED DATA
 
 # ALL
@@ -372,6 +317,10 @@ summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(f
 
 # Frequent and Infrequent
 summary(lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
+
+# Age Low, Mid, High
+summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
+
 
 # White, Black, Hispanic, Asian
 summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
@@ -382,124 +331,8 @@ summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(d
 # Dem, non-Dem
 summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+age, match.dat, weights=weights))$coef[2,1:2]
 
-# Age Low, Mid, High
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
-
-
-
 
 ################################################################################################
-
-
-################################################################################################
-# (3) TWO-YEAR DATA
-# Difference-in-Differences OLS
-# WITH COVARIATE
-summary(lm(Vote ~ Intervent +Time+Place+as.factor(female)+as.factor(democrat)+age+as.factor(estrace)+voted2010, match.dat))$coef[2,1:2]
-
-# OLS BY RACE
-match.dat %>% split(.$estrace) %>%
-  map(~ lm(Vote ~ Intervent +Time+Place+as.factor(female)+as.factor(democrat)+age+voted2010, data=.x)) %>% map(summary)
-
-# OLS BY GENDER
-match.dat %>% split(.$female) %>%
-  map(~ lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+as.factor(democrat)+age+voted2010, data=.x)) %>% map(summary)
-
-# OLS BY AGE
-match.dat %>% mutate(AgeGroup = case_when(match.dat$age < 35 ~ "Less than 35",
-                                              match.dat$age >= 35 & match.dat$age < 65 ~ "35 to 65",
-                                              match.dat$age >= 65 ~ "Over 65")) %>%  split(.$AgeGroup) %>%
-  map(~ lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+as.factor(democrat)+voted2010, data=.x)) %>% map(summary)
-
-# OLS BY PARTY
-match.dat %>% split(.$democrat) %>%
-  map(~ lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+age+voted2010, data=.x)) %>% map(summary)
-
-################################################################################################
-
-
-
-
-
-
-
-
-# ################################################################################################################
-# # (4) ONE-YEAR DATA
-# # (3.1) Difference-in-Means ===================================================================================#
-# summary(lm(Vote ~ Place, match.lag.dat))$coef[2,1:2]
-# 
-# # OLS BY RACE
-# match.lag.dat %>% split(.$estrace) %>%
-#   map(~ lm(Vote ~ Place, data=.x)) %>% map(summary)
-# 
-# # OLS BY GENDER
-# match.lag.dat %>% split(.$female) %>%
-#   map(~ lm(Vote ~ Place, data=.x)) %>% map(summary)
-# 
-# # OLS BY AGE
-# match.lag.dat %>% mutate(AgeGroup = case_when(match.lag.dat$age < 35 ~ "Less than 35",
-#                                               match.lag.dat$age >= 35 & match.lag.dat$age < 65 ~ "35 to 65",
-#                                               match.lag.dat$age >= 65 ~ "Over 65")) %>%  split(.$AgeGroup) %>%
-#   map(~ lm(Vote ~ Place, data=.x)) %>% map(summary)
-# 
-# # OLS BY PARTY
-# match.lag.dat %>% split(.$democrat) %>%
-#   map(~ lm(Vote ~ Place, data=.x)) %>% map(summary)
-# 
-# 
-# 
-# # (3.2) OLS with Covariates ===================================================================================#
-# # WITH COVARIATE
-# summary(lm(Vote ~ Place + lag.vote+as.factor(female)+as.factor(democrat)+age+as.factor(estrace), match.lag.dat))$coef[2,1:2]
-# 
-# # OLS BY RACE
-# match.lag.dat %>% split(.$estrace) %>%
-#   map(~ lm(Vote ~ Place + lag.vote+as.factor(female)+as.factor(democrat)+age, data=.x)) %>% map(summary)
-# 
-# # OLS BY GENDER
-# match.lag.dat %>% split(.$female) %>%
-#   map(~ lm(Vote ~ Place + lag.vote+as.factor(estrace)+as.factor(democrat)+age, data=.x)) %>% map(summary)
-# 
-# # OLS BY AGE
-# match.lag.dat %>% mutate(AgeGroup = case_when(match.lag.dat$age < 35 ~ "Less than 35",
-#                                               match.lag.dat$age >= 35 & match.lag.dat$age < 65 ~ "35 to 65",
-#                                               match.lag.dat$age >= 65 ~ "Over 65")) %>%  split(.$AgeGroup) %>%
-#   map(~ lm(Vote ~ Place + lag.vote+as.factor(estrace)+as.factor(female)+as.factor(democrat), data=.x)) %>% map(summary)
-# 
-# # OLS BY PARTY
-# match.lag.dat %>% split(.$democrat) %>%
-#   map(~ lm(Vote ~ Place + lag.vote+as.factor(estrace)+as.factor(female)+age, data=.x)) %>% map(summary)
-# 
-# 
-# 
-# # (3.3) First-Difference ======================================================================================#
-# # WITH COVARIATE
-# summary(lm(I(Vote-lag.vote) ~ Place + lag.vote+as.factor(female)+as.factor(democrat)+age+as.factor(estrace), match.lag.dat))$coef[2,1:2]
-# 
-# # OLS BY RACE
-# match.lag.dat %>% split(.$estrace) %>%
-#   map(~ lm(I(Vote-lag.vote) ~ Place +as.factor(female)+as.factor(democrat)+age, data=.x)) %>% map(summary)
-# 
-# # OLS BY GENDER
-# match.lag.dat %>% split(.$female) %>%
-#   map(~ lm(I(Vote-lag.vote) ~ Place +as.factor(estrace)+as.factor(democrat)+age, data=.x)) %>% map(summary)
-# 
-# # OLS BY AGE
-# match.lag.dat %>% mutate(AgeGroup = case_when(match.lag.dat$age < 35 ~ "Less than 35",
-#                                               match.lag.dat$age >= 35 & match.lag.dat$age < 65 ~ "35 to 65",
-#                                               match.lag.dat$age >= 65 ~ "Over 65")) %>%  split(.$AgeGroup) %>%
-#   map(~ lm(I(Vote-lag.vote) ~ Place +as.factor(estrace)+as.factor(female)+as.factor(democrat), data=.x)) %>% map(summary)
-# 
-# # OLS BY PARTY
-# match.lag.dat %>% split(.$democrat) %>%
-#   map(~ lm(I(Vote-lag.vote) ~ Place +as.factor(estrace)+as.factor(female)+age, data=.x)) %>% map(summary)
-# ###############################################################################################################
-
-
-
-
-
 ################################################################################################
 # END OF THIS R SOURCE CODE
 ################################################################################################
