@@ -11,10 +11,9 @@
 # (1) NORTH CAROLINA CONTROLS
 ################################################################################################
 
-library(tidyverse)
 rm(list=ls())
 
-{pdf("CATTPlot_1416.pdf", width=6, height=5)
+{pdf("CATTPlot_Figure2.pdf", width=6, height=5)
 par(mar=c(2,2,1,0.5), oma = c(0,3,2,0) + 0.1, mfrow=c(2,2))
 
 cs=1.5
@@ -26,10 +25,10 @@ cole2 <- "firebrick3"
 # NORTH CAROLINA CONTROL (FREQUENCY OF VOTING)
 ################################################################################################
 
-catt <- c(0.093, 0.110, 0.075, 0.048) # 14-Infreq, 14-freq, 16-Infreq, 16-freq
+catt <- c(0.075, 0.073, 0.075, 0.048) # 14-Infreq, 14-freq, 16-Infreq, 16-freq
 se  <- c(0.002, 0.003, 0.002, 0.003) # Infreq, Freq
 
-y <- seq(from=0, to=0.14, length=101)
+y <- seq(from=0, to=0.12, length=101)
 x <- seq(from=0, to=1, length=101)
 
 plot(y ~ x, type="n", xlab="", ylab="", xaxt="n")
@@ -62,7 +61,7 @@ mtext("Estimated Effect of VBM", side=2, line=2.1, cex=0.8)
 # New MEXICO CONTROL (FREQUENCY OF VOTING)
 ################################################################################################
 
-catt <- c(0.065, 0.134, 0.098, 0.042) # 14-Infreq, 14-freq, 16-Infreq, 16-freq
+catt <- c(0.058, 0.099, 0.098, 0.042) # 14-Infreq, 14-freq, 16-Infreq, 16-freq
 se  <- c(0.003, 0.002, 0.002, 0.002) # Infreq, Freq
 
 plot(y ~ x, type="n", xlab="", ylab="", xaxt="n")
@@ -93,7 +92,7 @@ mtext("New Mexico voters as control units", side=3, line=0.5, cex=0.9)
 # NORTH CAROLINA CONTROL (AGE GROUP)
 ################################################################################################
 
-catt <- c(0.086,0.093,0.129, 0.042, 0.036, 0.101) # 14-Y, 14-M, 14-O, 16-Y, 16-M, 16-O
+catt <- c(0.042,0.066,0.115, 0.042, 0.036, 0.101) # 14-Y, 14-M, 14-O, 16-Y, 16-M, 16-O
 se   <- c(0.004,0.003,0.003, 0.004, 0.003, 0.003)  # 14-Y, 14-M, 14-O, 16-Y, 16-M, 16-O
 
 plot(y ~ x, type="n", xlab="", ylab="", xaxt="n")
@@ -116,7 +115,7 @@ points(0.8, catt[6], pch=17, cex=cs)
 axis(1, at = seq(0.25, 1, by = 1), las=1, labels="2014",cex.axis=1, mgp=c(0,0.8,0))
 axis(1, at = seq(0.75, 1, by = 1), las=1, labels="2016" ,cex.axis=1,  mgp=c(0,0.8,0))
 
-legend(-0.02,0.05, pch = c(6, 16, 17), cex = 1, bty = "n",
+legend(-0.02,0.04, pch = c(6, 16, 17), cex = 1, bty = "n",
        legend = c("Under 35", "35-65", "Over 65"))
 
 mtext("Estimated Effect of VBM", side=2, line=2.1, cex=0.8)
@@ -125,7 +124,7 @@ mtext("Estimated Effect of VBM", side=2, line=2.1, cex=0.8)
 # NEW MEXICO (AGE GROUP)
 ################################################################################################
 
-catt <- c(0.093,0.120,0.118, 0.068, 0.052, 0.067) # 14-Y, 14-M, 14-O, 16-Y, 16-M, 16-O
+catt <- c(0.051,0.089,0.100, 0.068, 0.052, 0.067) # 14-Y, 14-M, 14-O, 16-Y, 16-M, 16-O
 se   <- c(0.004,0.003,0.003, 0.003, 0.003, 0.002)  # 14-Y, 14-M, 14-O, 16-Y, 16-M, 16-O
 
 
@@ -149,7 +148,7 @@ points(0.8, catt[6], pch=17, cex=cs)
 axis(1, at = seq(0.25, 1, by = 1), las=1, labels="2014",cex.axis=1, mgp=c(0,0.8,0))
 axis(1, at = seq(0.75, 1, by = 1), las=1, labels="2016" ,cex.axis=1,  mgp=c(0,0.8,0))
 
-legend(-0.02,0.05, pch = c(6, 16, 17), cex = 1, bty = "n", legend = c("Under 35", "35-65", "Over 65"))
+legend(-0.02,0.04, pch = c(6, 16, 17), cex = 1, bty = "n", legend = c("Under 35", "35-65", "Over 65"))
 
 dev.off()}
 
