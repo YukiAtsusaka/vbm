@@ -222,15 +222,21 @@ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 #library(haven)
 #dat <- read_dta("voterfile_fixed_Nov15.dta") # Colorado 2014
 #write_csv(dat, "voterfile_fixed_Nov15.csv")
-dat <- read_csv("voterfile_fixed_Nov15.csv") # Same Voter appears 3 times
+
+dat <- read_csv("2014hist.csv") # ALL VOTER WHO VOTED (10/8/2020)
+dat2 <- dat %>% filter(ELECTION_DATE=="11/04/2014") %>%
+        mutate(VoterID=VOTER_ID, voted2014=1) %>%
+        distinct(VoterID, voted2014) # 2072450
+
+#dat <- read_csv("voterfile_fixed_Nov15.csv") # Same Voter appears 3 times
 # temp <- dat %>% dplyr::select(vid, year, vote, elec2012, elec2014) %>%
 #         arrange(vid, year)
-dat2 <- dat %>% filter(!is.na(elec2014)&year==2014) %>%
-        mutate(VoterID = vid, 
-               voted2014 = vote) %>% 
-        dplyr::select(VoterID, voted2014) 
+#dat2 <- dat %>% filter(!is.na(elec2014)&year==2014) %>%
+#        mutate(VoterID = vid, 
+#               voted2014 = vote) %>% 
+#        dplyr::select(VoterID, voted2014) 
 
-write_csv(dat2, "Colo2014.csv")
+write_csv(dat2, "Colo2014.csv") # IF ONE IS NOT IN THIS FILE, SHE DID NOT VOTE
 
 #########################################################################################################
 # 2014 NORTH CAROLINA TURNOUT
@@ -255,8 +261,8 @@ write_csv(dat2, "NorthCarolina2014.csv")
 #########################################################################################################
 rm(list=ls()); gc(); gc()
 library(tidyverse)
-co2014 <- read_csv("Colo2014.csv")                   # 2293221
-co2014 <- co2014 %>% arrange(VoterID) %>% distinct(VoterID, voted2014) # Drop duplicates (2293169)
+co2014 <- read_csv("Colo2014.csv")                   # 2072450
+#co2014 <- co2014 %>% arrange(VoterID) %>% distinct(VoterID, voted2014) # Drop duplicates (2293169)
 
 stack_nc <- read_csv("Stack_NC_2012_2016.csv") # 12089156
 
@@ -268,14 +274,14 @@ stack_nc <- stack_nc %>% mutate(voted2014 = ifelse(!is.na(voted2014), voted2014,
 stack_nc <- stack_nc %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
                                 Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
             dplyr::select(-voted2014)
-
-
 stack_nc <- stack_nc %>% select(-voted2012)
 
 
 # LOGISTIC IMPUTATION
-stack_co <- read_csv("Stack_Colorado_2012_2016_imputed.csv") # 4494532
-stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed.csv") # 4494348
+stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494348 
+stack_co <- stack_co %>% mutate(voted2014 = ifelse(!is.na(voted2014), voted2014, 0)) # CODE NOT-VOTED FOT THOSE WHO WERE NOT IN "co2014.csv"
+
 stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
                                 Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
             dplyr::select(-voted2014)
