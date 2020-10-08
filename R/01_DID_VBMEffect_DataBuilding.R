@@ -294,10 +294,12 @@ stack_co_nc <- union_all(stack_co, stack_nc) %>%
 write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2014_imputed.csv")
 
 
-
+# THE FOLLOWING FILES MUST BE UPDATED WITH THE UPDATED colo2014.csv!!!! (10/8)
 # LOWEST VALUE IMPUTATION
 stack_co <- read_csv("Stack_Colorado_2012_2016_imputed_Low.csv") # 4494532
 stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
+stack_co <- stack_co %>% mutate(voted2014 = ifelse(!is.na(voted2014), voted2014, 0)) # CODE NOT-VOTED FOT THOSE WHO WERE NOT IN "co2014.csv"
+
 stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
                                 Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
             dplyr::select(-voted2014)
@@ -313,6 +315,8 @@ write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2014_imputed_Low.csv")
 # HIGHEST VALUE IMPUTATION
 stack_co <- read_csv("Stack_Colorado_2012_2016_imputed_Up.csv") # 4494532
 stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
+stack_co <- stack_co %>% mutate(voted2014 = ifelse(!is.na(voted2014), voted2014, 0)) # CODE NOT-VOTED FOT THOSE WHO WERE NOT IN "co2014.csv"
+
 stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
                                 Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
             dplyr::select(-voted2014)
@@ -329,16 +333,16 @@ write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2014_imputed_Up.csv")
 # 2014 COLORADO + NEW MEXICO 
 #########################################################################################################
 rm(list=ls());gc(); gc()
-#library(tidyverse)
+library(tidyverse)
 stack_nm <- read_csv("Stack_NM_2012_2014.csv") # 2006024
 stack_nm <- stack_nm %>% mutate(VoterID = as.character(VoterID))
 co2014 <- read_csv("Colo2014.csv")             # 2293221
-co2014 <- co2014 %>% arrange(VoterID) %>% distinct(VoterID, voted2014)# Drop duplicates (2293169)
-
 
 # LOGISTIC IMPUTATION
-stack_co <- read_csv("Stack_Colorado_2012_2016_imputed.csv") # 4494532
-stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
+stack_co <- read_csv("Stack_Colorado_2012_2016_imputed.csv") # 4494348
+stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494348 
+stack_co <- stack_co %>% mutate(voted2014 = ifelse(!is.na(voted2014), voted2014, 0)) # CODE NOT-VOTED FOT THOSE WHO WERE NOT IN "co2014.csv"
+
 stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
                                 Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
             dplyr::select(-voted2014)
@@ -356,6 +360,9 @@ write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2014_imputed.csv")
 # LOWEST VALUE IMPUTATION
 stack_co <- read_csv("Stack_Colorado_2012_2016_imputed_Low.csv") # 4494532
 stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
+stack_co <- stack_co %>% mutate(voted2014 = ifelse(!is.na(voted2014), voted2014, 0)) # CODE NOT-VOTED FOT THOSE WHO WERE NOT IN "co2014.csv"
+
+
 stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
                                 Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
             dplyr::select(-voted2014)
@@ -373,6 +380,8 @@ write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2014_imputed_Low.csv")
 # LOWEST VALUE IMPUTATION
 stack_co <- read_csv("Stack_Colorado_2012_2016_imputed_Up.csv") # 4494532
 stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
+stack_co <- stack_co %>% mutate(voted2014 = ifelse(!is.na(voted2014), voted2014, 0)) # CODE NOT-VOTED FOT THOSE WHO WERE NOT IN "co2014.csv"
+
 stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
                                 Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
             dplyr::select(-voted2014)
