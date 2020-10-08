@@ -272,9 +272,11 @@ library(cobalt)
 library(MatchIt)
 library(Hmisc)
 
+setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
+
 # CURRENTLY BASED ON IMPUTATINO "LOGIT" 8/10/2020
 rm(list=ls())
-dat_s <- read_csv("Stack_Colorado_NC_2012_2016_Sample_Republican.csv",     
+dat_s <- read_csv("Stack_Colorado_NC_2012_2016_Sample_Infrequent.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE

@@ -18,15 +18,27 @@ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 dat <- read_csv("Stack_Colorado_NC_2012_2014_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 dat <- dat %>% dplyr::select(-n)
 dat$age[dat$Year==2014] <- dat$age[dat$Year==2012] + 2
+
+# OLD FILES NEEDED MISSING VALUE IMPUTATION
 #dat$Vote[is.na(dat$Vote)] <- 1 # This leads to 0.8386044 (LESS PLAUSIBLE)
-dat$Vote[is.na(dat$Vote)] <- 0  # This leads to 0.6461022 (MORE PLAUSIBLE)
+#dat$Vote[is.na(dat$Vote)] <- 0  # This leads to 0.6461022 (MORE PLAUSIBLE)
+# ALSO TRIED LOGIT IMPUTATION, WHICH LED TO 0.838337 TURNOUT IN CO 2014 (LESS PLAUSIBLE)
+# HENCE, DECIDED TO USE THE LOWEST VALUE IMPUTATION
+# co14 <- dat[dat$State=="Colorado"&dat$Year==2014,]
+# m <- glm(Vote ~ female+democrat+age+estrace, family=binomial,co14) # NEVER USE STATE OR YEAR
+# pred.val <- predict(m, dat[,c(2,3,4,5)], type="response") 
+# pred_vote <- ifelse(pred.val >=0.5, 1,0)
+# co14 <- co14 %>% mutate(Vote = ifelse(!is.na(Vote), Vote, pred_vote)) 
+# dat$Vote[dat$State=="Colorado"&dat$Year==2014] <- co14$Vote
 
 datCO <- dat %>% filter(Place==1)
 datNC <- dat %>% filter(Place==0)
 
 # TURNOUT BY STATE AND YEAR
+mean(datCO$voted2010) # CO 2010 (0.6750583)
+mean(datNC$voted2010) # NC 2010 (0.43495) 
 mean(datCO$Vote[datCO$Year==2012]) # CO 2012 (0.8300265)
-mean(datCO$Vote[datCO$Year==2014]) # CO 2014 (0.6461022) # BASED ON THE LOWEST VALUE IMPUTATION (Line 22)
+mean(datCO$Vote[datCO$Year==2014]) # CO 2014 (0.6893974) 
 mean(datNC$Vote[datNC$Year==2012]) # NC 2012 (0.6944402)
 mean(datNC$Vote[datNC$Year==2014]) # NC 2014 (0.4465458)
 
@@ -271,14 +283,12 @@ write_csv(dat_samp, "Stack_Colorado_NC_2012_2014_Sample_Republican.csv")
 # (2) PREPROCESSING DATA
 # ESTIMAND: ATT (AVERAGED TREATMENT EFFECT ON THE TREATED)
 library(tidyverse)
-library(Matching)
-library(ebal)
 library(cobalt)
 library(MatchIt)
-library(Hmisc)
 
 rm(list=ls());gc();gc()
 # CURRENTLY BASED ON IMPUTATINO "LOGIT" 8/19/2020
+setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 dat_s <- read_csv("Stack_Colorado_NC_2012_2014_Sample_Republican.csv",     
                   col_types = cols(VoterID = col_character()))
 

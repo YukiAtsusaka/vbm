@@ -275,7 +275,7 @@ rm(list=ls());gc();gc()
 
 
 # CURRENTLY BASED ON IMPUTATION "LOGISTIC"/10/04/2020
-dat_s <- read_csv("Stack_Colorado_NM_2012_2016_Sample_AgeHigh.csv",     
+dat_s <- read_csv("Stack_Colorado_NM_2012_2016_Sample_Frequent.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE
@@ -306,10 +306,6 @@ match.dat <- match.dat %>% left_join(w, by="VoterID")
 love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), threshold = .1)
 # Save by Portrait (8.00 x 5.00)
 ################################################################################################
-
-
-3620569/(873783  + 3620569)
-1029466/(976558 + 1029466)
 
 ################################################################################################
 # (3) TWO-YEAR PRE-STRATIFIED AND PREPROCESSED DATA

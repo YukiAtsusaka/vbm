@@ -16,15 +16,19 @@ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 dat <- read_csv("Stack_Colorado_NM_2012_2014_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 dat <- dat %>% dplyr::select(-n)
 dat$age[dat$Year==2014] <- dat$age[dat$Year==2012] + 2
+
+# OLD FILES NEEDED IMPUTATION
 #dat$Vote[is.na(dat$Vote)] <- 1 # This leads to 0.8386044 (LESS PLAUSIBLE)
-dat$Vote[is.na(dat$Vote)] <- 0  # This leads to 0.6461022 (MORE PLAUSIBLE)
+#dat$Vote[is.na(dat$Vote)] <- 0  # This leads to 0.6461022 (MORE PLAUSIBLE)
 
 datCO <- dat %>% filter(Place==1)
 datNM <- dat %>% filter(Place==0)
 
 # TURNOUT BY STATE AND YEAR
+mean(datCO$voted2010) # CO 2010 (0.6750583)
+mean(datNM$voted2010) # NM 2010 (0.5131873) 
 mean(datCO$Vote[datCO$Year==2012]) # CO 2012 (0.8300265)
-mean(datCO$Vote[datCO$Year==2014]) # CO 2014 (0.6461022) # LOWEST VALUE IMPUTATION
+mean(datCO$Vote[datCO$Year==2014]) # CO 2014 (0.6893974)
 mean(datNM$Vote[datNM$Year==2012]) # NM 2012 (0.6934513)
 mean(datNM$Vote[datNM$Year==2014]) # NM 2014 (0.4536366)
 
@@ -265,17 +269,14 @@ write_csv(dat_samp, "Stack_Colorado_NM_2012_2014_Sample_Republican.csv")
 # ESTIMAND: ATT (AVERAGED TREATMENT EFFECT ON THE TREATED)
 
 library(tidyverse)
-library(Matching)
-library(ebal)
 library(cobalt)
 library(MatchIt)
-library(Hmisc)
 rm(list=ls());gc(); gc()
 
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
 # CURRENTLY BASED ON IMPUTATION "LOGIT/10/3/2020
-dat_s <- read_csv("Stack_Colorado_NM_2012_2014_Sample_Republican.csv",     
+dat_s <- read_csv("Stack_Colorado_NM_2012_2014_Sample_Democrat.csv",     
                   col_types = cols(VoterID = col_character()))
 
 # SUBSETTING DATA FOR TWO DATA TYPE
@@ -293,7 +294,6 @@ variable_names2 <- c("voted2010","female", "age", "estrace")   # FOR PARTY SPLIT
 
 X.16 <- dat_s16[, variable_names2] # COVARIATE MATRIX FOR TWO-YEAR DATA
 m.out16     <- matchit(f.build("Place", X.16), data=dat_s16, method="exact")
-
 
 # CREATING MATCHED DATA
 match.16ID <- match.data(m.out16) %>% dplyr::select(VoterID) %>% pull() # VoterID for MATCHED SAMPLE
