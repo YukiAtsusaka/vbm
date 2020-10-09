@@ -72,7 +72,7 @@ write_csv(nc12_16, "Stack_NC_2012_2016.csv")
 
 
 rm(list=ls()); gc(); gc()
-library(haven)
+#library(haven)
 library(tidyverse)
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
@@ -122,13 +122,21 @@ m <- glm(voted2010 ~ female+democrat+age+estrace, family=binomial,co12_16)
 pred.val <- predict(m, co12_16[,c(2,3,4,5)], type="response")
 pred_voted2010 <- ifelse(pred.val >=0.5, 1,0)
 
+
+
 dat.imp  <- co12_16 %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, pred_voted2010))
+dat.imp$voted2010[dat.imp$State=="Colorado" & dat.imp$Year==2016] <- ifelse(
+  dat.imp$voted2010[dat.imp$State=="Colorado" & dat.imp$Year==2016]==
+  dat.imp$voted2010[dat.imp$State=="Colorado" & dat.imp$Year==2012], # IF THEY ARE THE SAME 
+  dat.imp$voted2010[dat.imp$State=="Colorado" & dat.imp$Year==2016], # NO CHANGE
+  dat.imp$voted2010[dat.imp$State=="Colorado" & dat.imp$Year==2012]) # IF NOT, FIT TO 2012 ONE
+
 dat.imp2 <- co12_16 %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 0)) # Lowest Value
 dat.imp3 <- co12_16 %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 1)) # Highest Value
 
-mean(dat.imp$voted2010==dat.imp2$voted2010)   # 0.9468188  
-mean(dat.imp$voted2010==dat.imp3$voted2010)   # 0.9606072 --> LOGIT IS CLOSER TO THE HIGHEST VALUE EST
-mean(dat.imp$voted2010[dat.imp$Year==2016])   # 0.6802455   --> REASONABLE
+mean(dat.imp$voted2010==dat.imp2$voted2010)   # 0.9520059  
+mean(dat.imp$voted2010==dat.imp3$voted2010)   # 0.95542 --> LOGIT IS CLOSER TO THE HIGHEST VALUE EST
+mean(dat.imp$voted2010[dat.imp$Year==2016])   # 0.6698711   --> REASONABLE
 mean(dat.imp2$voted2010[dat.imp2$Year==2016]) # 0.6218771 --> 2010 TURNOUT WITH THE LOWEST VALUE EST
 mean(dat.imp3$voted2010[dat.imp3$Year==2016]) # 0.7144511 --> 2010 TURNOUT WITH THE HIGHEST VALUE EST
 
@@ -142,7 +150,6 @@ write_csv(dat.imp3, "Stack_Colorado_2012_2016_imputed_Up.csv")
 #########################################################################################################
 rm(list=ls());gc(); gc()
 library(tidyverse)
-library(magrittr)
 stack_nc <- read_csv("Stack_NC_2012_2016.csv")       # 12089156
 stack_nc <- stack_nc %>% select(-voted2012)
 
@@ -262,7 +269,6 @@ write_csv(dat2, "NorthCarolina2014.csv")
 rm(list=ls()); gc(); gc()
 library(tidyverse)
 co2014 <- read_csv("Colo2014.csv")                   # 2072450
-#co2014 <- co2014 %>% arrange(VoterID) %>% distinct(VoterID, voted2014) # Drop duplicates (2293169)
 
 stack_nc <- read_csv("Stack_NC_2012_2016.csv") # 12089156
 
