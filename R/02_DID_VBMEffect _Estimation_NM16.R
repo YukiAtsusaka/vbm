@@ -82,12 +82,12 @@ write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Infrequent.csv")
 
 # SIMPLE RANDOM SAMPLING (Young less than 35 Voters) ==================================================#
 set.seed(1029501)
-sample_CO <- datCO %>% filter(age<=35) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+sample_CO <- datCO %>% filter(age<=40) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
   sample(size=round(0.01*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
 datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
-sample_NM <- datNM %>% filter(age<=35) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+sample_NM <- datNM %>% filter(age<=40) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
   sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
@@ -99,12 +99,12 @@ write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_AgeLow.csv")
 
 # SIMPLE RANDOM SAMPLING (Middle > 35, < 65  Voters) ==================================================#
 set.seed(1029501)
-sample_CO <- datCO %>% filter(age>35 & age<=65) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+sample_CO <- datCO %>% filter(age>40 & age<=65) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
   sample(size=round(0.01*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
 datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
-sample_NM <- datNM %>% filter(age>35 & age<=65) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
+sample_NM <- datNM %>% filter(age>40 & age<=65) %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
   sample(size=round(0.1*dim(datNM)[1]), replace=F)   # SAMPLE 1% = 24178
 datNM.s <- datNM %>% filter(VoterID %in% sample_NM) %>% arrange(VoterID)
 
@@ -266,11 +266,12 @@ write_csv(dat_samp, "Stack_Colorado_NM_2012_2016_Sample_Republican.csv")
 # ESTIMAND: ATT (AVERAGED TREATMENT EFFECT ON THE TREATED)
 
 library(tidyverse)
-library(Matching)
-library(ebal)
 library(cobalt)
 library(MatchIt)
-library(Hmisc)
+library(lmtest)
+library(sandwich)
+library(clubSandwich)
+
 rm(list=ls());gc();gc()
 
 
@@ -283,8 +284,8 @@ dat_s16 <- dat_s %>% filter(Time==1)   # For TWO-YEAR DATA
 
 # CREATING COVARIATE MATRIX
 variable_names2 <- c("voted2010", "female", "age", "estrace", "democrat")   # ALL DATA
-variable_names2 <- c("female", "age", "estrace", "democrat")   # FOR FREQUENT VOTER DATA
-variable_names2 <- c("voted2010","female", "age", "estrace", "democrat")   # FOR AGE SPLIT DATA + ALL DATA
+variable_names2 <- c("female",  "estrace", "age", "democrat")   # FOR FREQUENT VOTER DATA
+variable_names2 <- c("voted2010","female", "age",  "estrace", "democrat")   # FOR AGE SPLIT DATA + ALL DATA
 
 variable_names2 <- c("voted2010", "female", "age", "democrat") # FOR RACE SPLIT DATA
 variable_names2 <- c("voted2010","age", "democrat", "estrace") # FOR GENDER SPLIT DATA
@@ -314,10 +315,16 @@ love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), thr
 summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age,match.dat, weights=weights))$coef[2,1:2]
 
 # Frequent and Infrequent
-summary(lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age+I(age^2), match.dat, weights=weights))$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+as.factor(democrat), match.dat, weights=weights))$coef[2,1:2]
 
 # Age Low, Mid, High
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age+I(age^2), match.dat, weights=weights))$coef[2,1:2]
+
+m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights)
+
+clubSandwich::coef_test(m, cluster=match.dat$VoterID, vcov="CR1")[2,1:2]
+
 
 # White, Black, Hispanic, Asian
 summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]

@@ -266,11 +266,10 @@ write_csv(dat_samp, "Stack_Colorado_NC_2012_2016_Sample_Republican.csv")
 # ESTIMAND: ATT (AVERAGED TREATMENT EFFECT ON THE TREATED)
 rm(list=ls());gc(); gc()
 library(tidyverse)
-library(Matching)
-library(ebal)
 library(cobalt)
 library(MatchIt)
-library(Hmisc)
+#library(lmtest)
+#library(sandwich)
 
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
@@ -285,7 +284,7 @@ dat_s16 <- dat_s %>% filter(Time==1)   # For TWO-YEAR DATA
 # CREATING COVARIATE MATRIX
 variable_names2 <- c("voted2010", "female", "age", "estrace", "democrat")   # ALL DATA
 variable_names2 <- c("female", "age", "estrace", "democrat")   # FOR FREQUENT VOTER DATA
-variable_names2 <- c("voted2010","female", "age", "estrace", "democrat")   # FOR AGE SPLIT DATA + ALL DATA
+variable_names2 <- c("voted2010","female", "estrace", "democrat")   # FOR AGE SPLIT DATA + ALL DATA
 
 variable_names2 <- c("voted2010", "female", "age", "democrat") # FOR RACE SPLIT DATA
 variable_names2 <- c("voted2010","age", "democrat", "estrace") # FOR GENDER SPLIT DATA
@@ -315,13 +314,17 @@ love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), thr
 # (3) TWO-YEAR PRE-STRATIFIED AND PREPROCESSED DATA
 
 # ALL
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age,match.dat, weights=weights))$coef[2,1:2]
+m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age,match.dat, weights=weights)
+coeftest(m, vcov = vcovHC(m, type="HC3"))[2,1:2]
+
+
 
 # Frequent and Infrequent
 summary(lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
 
 # Age Low, Mid, High
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
+m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat), match.dat, weights=weights)
+coeftest(m, vcov = vcovHC(m, type="HC3"))[2,1:2]
 
 
 # White, Black, Hispanic, Asian

@@ -15,7 +15,8 @@ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
 dat <- read_csv("Stack_Colorado_NM_2012_2014_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 dat <- dat %>% dplyr::select(-n)
-dat$age[dat$Year==2014] <- dat$age[dat$Year==2012] + 2
+dat$age[dat$Year==2014 & dat$State=="Colorado"] <- dat$age[dat$Year==2012 & dat$State=="Colorado"] + 2
+
 
 # OLD FILES NEEDED IMPUTATION
 #dat$Vote[is.na(dat$Vote)] <- 1 # This leads to 0.8386044 (LESS PLAUSIBLE)

@@ -17,7 +17,8 @@ library(tidyverse)
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 dat <- read_csv("Stack_Colorado_NC_2012_2014_imputed.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 dat <- dat %>% dplyr::select(-n)
-dat$age[dat$Year==2014] <- dat$age[dat$Year==2012] + 2
+dat$age[dat$Year==2014 & dat$State=="Colorado"] <- dat$age[dat$Year==2012 & dat$State=="Colorado"] + 2
+
 
 # OLD FILES NEEDED MISSING VALUE IMPUTATION
 #dat$Vote[is.na(dat$Vote)] <- 1 # This leads to 0.8386044 (LESS PLAUSIBLE)
@@ -35,7 +36,7 @@ datCO <- dat %>% filter(Place==1)
 datNC <- dat %>% filter(Place==0)
 
 # TURNOUT BY STATE AND YEAR
-mean(datCO$voted2010) # CO 2010 (0.6750583)
+mean(datCO$voted2010) # CO 2010 (0.6698711)
 mean(datNC$voted2010) # NC 2010 (0.43495) 
 mean(datCO$Vote[datCO$Year==2012]) # CO 2012 (0.8300265)
 mean(datCO$Vote[datCO$Year==2014]) # CO 2014 (0.6893974) 
@@ -204,7 +205,7 @@ datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
 
 set.seed(1029501)
 sample_NC <- datNC %>% filter(estrace=="Asian") %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
-  sample(size=round(0.005*dim(datNC)[1]), replace=F)   # SAMPLE 1% = 24178
+  sample(size=round(0.004*dim(datNC)[1]), replace=F)   # SAMPLE 1% = 24178
 datNC.s <- datNC %>% filter(VoterID %in% sample_NC) %>% arrange(VoterID)
 
 dat_samp <- union_all(datCO.s, datNC.s) # Stack two states again
@@ -306,7 +307,7 @@ variable_names2 <- c("voted2010","female", "age", "estrace")   # FOR PARTY SPLIT
 
 
 
-X.16 <- dat_s16[, variable_names2] # COVARIATE MATRIX FOR TWO-YEAR DATA
+{X.16 <- dat_s16[, variable_names2] # COVARIATE MATRIX FOR TWO-YEAR DATA
 m.out16     <- matchit(f.build("Place", X.16), data=dat_s16, method="exact")
 
 # CREATING MATCHED DATA
@@ -314,11 +315,10 @@ match.16ID <- match.data(m.out16) %>% dplyr::select(VoterID) %>% pull() # VoterI
 w <- match.data(m.out16) %>% dplyr::select(c(VoterID, weights)) # Weight for ATT
 match.dat <- dat_s %>% filter(VoterID %in% match.16ID) # MATCHED TWO-YEAR DATA
 match.dat <- match.dat %>% left_join(w, by="VoterID")
-
-#write_csv(match.dat, "Stack_Colorado_NC_2012_2014_Matched.csv")
+}
 
 # COVARIATE BALANCE
-love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), threshold = .1)
+#love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), threshold = .1)
 # Save by Porrail (8.00 x 5.00)
 ################################################################################################
 
@@ -328,28 +328,31 @@ love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), thr
 # (3) TWO-YEAR PRE-STRATIFIED AND PREPROCESSED DATA
 
 # ALL
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age,match.dat, weights=weights))$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+(voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age+I(age^2))^20,match.dat, weights=weights))$coef[2,1:2]
+
 
 # Frequent and Infrequent
-summary(lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+(as.factor(estrace)+as.factor(female)+as.factor(democrat)+age+I(age^2))^20, match.dat, weights=weights))$coef[2,1:2]
+
 
 # Age Low, Mid, High
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+(voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age+I(age^2))^20, match.dat, weights=weights))$coef[2,1:2]
 
 
 # White, Black, Hispanic, Asian
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+(voted2010+as.factor(female)+as.factor(democrat)+age+I(age*2))^20, match.dat, weights=weights))$coef[2,1:2]
 
 # Male, Female
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(democrat)+age, match.dat, weights=weights))$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+(voted2010+as.factor(estrace)+as.factor(democrat)+age+I(age^2))^20, match.dat, weights=weights))$coef[2,1:2]
 
 # Dem, non-Dem
-summary(lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+age, match.dat, weights=weights))$coef[2,1:2]
+summary(lm(Vote ~ Intervent +Time+Place+ (voted2010+as.factor(estrace)+as.factor(female)+age+I(age^2))^20, match.dat, weights=weights))$coef[2,1:2]
 
 
-################################################################################################
+m <- lm(Vote ~ Intervent +Time+Place+ (voted2010+as.factor(estrace)+as.factor(female)+age+I(age^2))^20, match.dat, weights=weights)
+
+
 
 ################################################################################################
 # END OF THIS R SOURCE CODE
 ################################################################################################
-  
