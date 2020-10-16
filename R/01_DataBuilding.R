@@ -65,14 +65,14 @@ write_csv(nc12_16, "Stack_NC_2012_2016.csv")
 #              distinct(voter_id, .keep_all=T)     # 3778507      # Drop duplicates [A LOT, needs check]
 #write_csv(sup_co2016, "co2016_sup.csv")
 
-# co2010 <- read_csv("2010 Reg Co Voters and Vote History.dta")
-# voted2010 <- co2010 %>% mutate(VoterID=voted_id6) %>%
-#              dplyr::select(VoterID, voted2010)
-# write_csv(voted2010, "Colorado2010_turnout.csv")
+ # co2010 <- read_dta("2010 Reg Co Voters and Vote History.dta")
+ # voted2010 <- co2010 %>% mutate(VoterID=voted_id6) %>%
+ #              dplyr::select(VoterID, voted2010)
+ # write_csv(voted2010, "Colorado2010_turnout.csv")
 
 
 rm(list=ls()); gc(); gc()
-#library(haven)
+library(haven)
 library(tidyverse)
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 
@@ -133,6 +133,7 @@ dat.imp$voted2010[dat.imp$State=="Colorado" & dat.imp$Year==2016] <- ifelse(
 
 dat.imp2 <- co12_16 %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 0)) # Lowest Value
 dat.imp3 <- co12_16 %>% mutate(voted2010 = ifelse(!is.na(voted2010), voted2010, 1)) # Highest Value
+dat.imp4 <- co12_16 %>% filter(!is.na(voted2010)) # Limiting the population
 
 mean(dat.imp$voted2010==dat.imp2$voted2010)   # 0.9520059  
 mean(dat.imp$voted2010==dat.imp3$voted2010)   # 0.95542 --> LOGIT IS CLOSER TO THE HIGHEST VALUE EST
@@ -143,6 +144,7 @@ mean(dat.imp3$voted2010[dat.imp3$Year==2016]) # 0.7144511 --> 2010 TURNOUT WITH 
 write_csv(dat.imp, "Stack_Colorado_2012_2016_imputed.csv")
 write_csv(dat.imp2, "Stack_Colorado_2012_2016_imputed_Low.csv")
 write_csv(dat.imp3, "Stack_Colorado_2012_2016_imputed_Up.csv")
+write_csv(dat.imp4, "Stack_Colorado_2012_2016.csv")
 
 
 #########################################################################################################
@@ -182,6 +184,16 @@ stack_co_nc <- union_all(stack_co, stack_nc) %>%
 write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2016_imputed_Up.csv")
 
 
+
+# LIMITED POPULATION
+stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
+stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
+stack_co_nc <- union_all(stack_co, stack_nc) %>%
+               mutate(Time = ifelse(Year==2016, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 18367514
+write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2016.csv")
+
 #########################################################################################################
 # 2016 COLORADO + NEW MEXICO 
 #########################################################################################################
@@ -215,6 +227,15 @@ stack_co_nm <- union_all(stack_co, stack_nm) %>%
                       Place = ifelse(State=="Colorado", 1,0),
                       Intervent = Time*Place) # 6111336
 write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2016_imputed_Up.csv")
+
+
+# LIMITED POPULATION
+stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
+stack_co_nm <- union_all(stack_co, stack_nm) %>%
+               mutate(Time = ifelse(Year==2016, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 6111336
+write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2016.csv")
 #########################################################################################################
 
 #########################################################################################################
@@ -335,6 +356,23 @@ stack_co_nc <- union_all(stack_co, stack_nc) %>%
 write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2014_imputed_Up.csv")
 
 
+# LIMITED POPULATION
+stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
+stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
+stack_co <- stack_co %>% mutate(voted2014 = ifelse(!is.na(voted2014), voted2014, 0)) # CODE NOT-VOTED FOT THOSE WHO WERE NOT IN "co2014.csv"
+
+stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
+                                Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
+            dplyr::select(-voted2014)
+stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
+
+stack_co_nc <- union_all(stack_co, stack_nc) %>%
+               mutate(Time = ifelse(Year==2014, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 16583508
+write_csv(stack_co_nc, "Stack_Colorado_NC_2012_2014.csv")
+
+
 #########################################################################################################
 # 2014 COLORADO + NEW MEXICO 
 #########################################################################################################
@@ -399,6 +437,25 @@ stack_co_nm <- union_all(stack_co, stack_nm) %>%
                       Intervent = Time*Place) # 16583508
 
 write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2014_imputed_Up.csv")
+
+
+
+# LIMITED DISTRIBUTION
+stack_co <- read_csv("Stack_Colorado_2012_2016.csv") # 4494532
+stack_co <- stack_co %>% left_join(co2014, by="VoterID") # 4494352 
+stack_co <- stack_co %>% mutate(voted2014 = ifelse(!is.na(voted2014), voted2014, 0)) # CODE NOT-VOTED FOT THOSE WHO WERE NOT IN "co2014.csv"
+
+stack_co <- stack_co %>% mutate(Vote = ifelse(Year==2012, Vote, voted2014),  # Replace 2016 with 2014 data
+                                Year = ifelse(Year==2012, Year, 2014)) %>%   # Replace 2016 with 2014 data
+            dplyr::select(-voted2014)
+stack_co <- stack_co %>% mutate(VoterID = as.character(VoterID))
+
+stack_co_nm <- union_all(stack_co, stack_nm) %>%
+               mutate(Time = ifelse(Year==2014, 1, 0),
+                      Place = ifelse(State=="Colorado", 1,0),
+                      Intervent = Time*Place) # 16583508
+
+write_csv(stack_co_nm, "Stack_Colorado_NM_2012_2014.csv")
 
 
 #########################################################################################################
