@@ -43,7 +43,7 @@ att <- c(0.065, 0.053, 0.099, 0.085, 0.046, 0.112,
 se  <- c(0.003, 0.003, 0.003, 0.004, 0.003, 0.003, 
          0.003, 0.003, 0.004, 0.003, 0.003, 0.003, 0.003, 0.003)
 
-y <- seq(from=0.02, to=0.14, length=101)
+y <- seq(from=0.03, to=0.14, length=101)
 x <- seq(from=0, to=100, by=1)
 ratio <- 100/(14)
 cole <- "firebrick4"
@@ -77,19 +77,19 @@ for(i in 2:14){ arrows(y0=att[i]-1.96*se[i], y1=att[i]+1.96*se[i],
 for(i in 2:14){ points(ratio*i, att[i], pch=1, cex=4*prop[i], col="navy") }
 
 text(x=ratio*2.2,y=0.135, labels="North Carolina as Control", font=2, cex=1.5)
-text(x=ratio*0.5,y=att[1]-0.01, labels="All Voter", font=2)
-text(x=ratio*2, y=att[2]+0.01, labels="Frequent Voter", font=2)
+text(x=ratio*0.5,y=att[1]+0.01, labels="All Voter", font=2)
+text(x=ratio*2, y=att[2]-0.01, labels="Frequent Voter", font=2)
 text(x=ratio*3, y=att[3]+0.01, labels="Infrequent Voter", font=2)
-text(x=ratio*4, y=att[4]-0.01, labels="U35", font=2)
-text(x=ratio*5, y=att[5]-0.01, labels="35-65", font=2)
-text(x=ratio*6, y=att[6]-0.01, labels="O65", font=2)
-text(x=ratio*7, y=att[7]+0.01, labels="White", font=2)
-text(x=ratio*8, y=att[8]+0.01, labels="Black", font=2)
-text(x=ratio*9, y=att[9]+0.01, labels="Hispanic", font=2)
-text(x=ratio*10, y=att[10]+0.01, labels="Asian", font=2)
-text(x=ratio*11, y=att[11]-0.01, labels="Female", font=2)
-text(x=ratio*12, y=att[12]-0.01, labels="Male", font=2)
-text(x=ratio*13, y=att[13]+0.01, labels="Dem", font=2)
+text(x=ratio*4, y=att[4]+0.01, labels="U40", font=2)
+text(x=ratio*5, y=att[5]+0.01, labels="41-65", font=2)
+text(x=ratio*6, y=att[6]+0.01, labels="O65", font=2)
+text(x=ratio*7, y=att[7]-0.01, labels="White", font=2)
+text(x=ratio*8, y=att[8]-0.01, labels="Black", font=2)
+text(x=ratio*9, y=att[9]-0.01, labels="Hispanic", font=2)
+text(x=ratio*10, y=att[10]-0.01, labels="Asian", font=2)
+text(x=ratio*11, y=att[11]+0.01, labels="Female", font=2)
+text(x=ratio*12, y=att[12]+0.01, labels="Male", font=2)
+text(x=ratio*13, y=att[13]-0.01, labels="Dem", font=2)
 text(x=ratio*14-1, y=att[14]+0.01, labels="Non-Dem", font=2)
 
 
@@ -138,22 +138,20 @@ for(i in 2:14){ arrows(y0=att[i]-1.96*se[i], y1=att[i]+1.96*se[i],
 for(i in 2:14){ points(ratio*i, att[i], pch=1, cex=4*prop[i], col="navy") }
 
 text(x=ratio*2,y=0.135, labels="New Mexico as Control", font=2, cex=1.5)
-text(x=ratio*0.5,y=att[1]-0.01, labels="All Voter", font=2)
-text(x=ratio*2, y=att[2]+0.01, labels="Frequent Voter", font=2)
-text(x=ratio*3, y=att[3]+0.01, labels="Infrequent Voter", font=2)
-text(x=ratio*4, y=att[4]-0.01, labels="U35", font=2)
-text(x=ratio*5, y=att[5]-0.01, labels="35-65", font=2)
-text(x=ratio*6, y=att[6]-0.01, labels="O65", font=2)
-text(x=ratio*7, y=att[7]+0.01, labels="White", font=2)
-text(x=ratio*8, y=att[8]+0.01, labels="Black", font=2)
-text(x=ratio*9, y=att[9]+0.01, labels="Hispanic", font=2)
-text(x=ratio*10, y=att[10]+0.01, labels="Asian", font=2)
-text(x=ratio*11, y=att[11]-0.01, labels="Female", font=2)
-text(x=ratio*12, y=att[12]-0.01, labels="Male", font=2)
-text(x=ratio*13, y=att[13]+0.01, labels="Dem", font=2)
-text(x=ratio*14-1, y=att[14]+0.01, labels="Non-Dem", font=2)
-
-
+text(x=ratio*0.5,y=att[1]+0.01, labels="All Voter", font=2)
+text(x=ratio*2, y=att[2]-0.01, labels="Frequent Voter", font=2)
+text(x=ratio*3, y=att[3]-0.01, labels="Infrequent Voter", font=2)
+text(x=ratio*4, y=att[4]+0.01, labels="U40", font=2)
+text(x=ratio*5, y=att[5]+0.01, labels="41-65", font=2)
+text(x=ratio*6, y=att[6]+0.01, labels="O65", font=2)
+text(x=ratio*7, y=att[7]-0.01, labels="White", font=2)
+text(x=ratio*8, y=att[8]-0.01, labels="Black", font=2)
+text(x=ratio*9, y=att[9]-0.01, labels="Hispanic", font=2)
+text(x=ratio*10, y=att[10]-0.01, labels="Asian", font=2)
+text(x=ratio*11, y=att[11]+0.01, labels="Female", font=2)
+text(x=ratio*12, y=att[12]+0.01, labels="Male", font=2)
+text(x=ratio*13, y=att[13]-0.01, labels="Dem", font=2)
+text(x=ratio*14-1, y=att[14]-0.01, labels="Non-Dem", font=2)
 
 dev.off()
 }
