@@ -10,7 +10,7 @@
 ################################################################################################
 # (1) NORTH CAROLINA CONTROLS
 ################################################################################################
-setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
+#setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 library(tidyverse)
 library("ggsci")
 rm(list=ls())
@@ -29,6 +29,7 @@ par(mar=c(1,3,1,1), mfrow=c(2,1))
 # datCO %>% group_by(female) %>% summarise(n = n()) %>% mutate(freq = n / sum(n))
 # datCO %>% group_by(democrat) %>% summarise(n = n()) %>% mutate(freq = n / sum(n))
 
+
 prop = c(1, 0.685, 0.315,                # All, frequent, infrequent
          0.240, 0.521, 0.239,            # U35, 35-65, O65 
          0.730, 0.102, 0.105, 0.054,    # White, black, hispanic, asian
@@ -37,8 +38,6 @@ prop = c(1, 0.685, 0.315,                # All, frequent, infrequent
 
 prop <- sqrt(prop)
 
-
-# CATTs from Table D.1 on Online Appendix
 att <- c(0.102, 0.095, 0.105, 0.096, 0.091, 0.119, 
          0.097, 0.090, 0.120, 0.123, 0.096, 0.101, 0.079, 0.107)
 se  <- c(0.004, 0.003, 0.002, 0.004, 0.003, 0.003, 
@@ -81,8 +80,8 @@ text(x=ratio*2.2,y=0.135, labels="North Carolina as Control", font=2, cex=1.5)
 text(x=ratio*0.5,y=att[1]-0.01, labels="All Voter", font=2)
 text(x=ratio*2, y=att[2]+0.01, labels="Frequent Voter", font=2)
 text(x=ratio*3, y=att[3]+0.01, labels="Infrequent Voter", font=2)
-text(x=ratio*4, y=att[4]-0.01, labels="U35", font=2)
-text(x=ratio*5, y=att[5]-0.01, labels="35-65", font=2)
+text(x=ratio*4, y=att[4]-0.01, labels="U40", font=2)
+text(x=ratio*5, y=att[5]-0.01, labels="41-65", font=2)
 text(x=ratio*6, y=att[6]-0.01, labels="O65", font=2)
 text(x=ratio*7, y=att[7]+0.01, labels="White", font=2)
 text(x=ratio*8, y=att[8]+0.01, labels="Black", font=2)
@@ -98,19 +97,9 @@ text(x=ratio*14-1, y=att[14]+0.01, labels="Non-Dem", font=2)
 # (2) NEW MEXICO CONTROLS
 ################################################################################################
 
-# CATTs from Table D.1 on Online Appendix 
-att <- c(0.099, 0.112, 0.081, 0.109, 0.104, 0.102,
-         0.098, 0.116, 0.103, 0.125, 0.099, 0.102, 0.090, 0.107)
-se  <- c(0.003, 0.002, 0.002, 0.004, 0.003, 0.002, 
-         0.003, 0.007, 0.002, 0.008, 0.003, 0.003, 0.003, 0.003)
-
-
-# y <- seq(from=0, to=0.12, length=101)
-# x <- seq(from=0, to=100, by=1)
-# ratio <- 100/(14)
-# cole <- "firebrick4"
-# pal <- pal_jco()(10)
-
+est <- read_csv("ATT_NM14.csv")
+att <- est[,1] %>% pull()
+se <- est[,2] %>% pull()
 
 plot(y ~ x, type="n", xlab="", ylab="", xaxt="n")
 #abline(h=att[1], lty=1, col="firebrick4")
@@ -142,8 +131,8 @@ text(x=ratio*2,y=0.135, labels="New Mexico as Control", font=2, cex=1.5)
 text(x=ratio*0.5,y=att[1]-0.01, labels="All Voter", font=2)
 text(x=ratio*2, y=att[2]+0.01, labels="Frequent Voter", font=2)
 text(x=ratio*3, y=att[3]+0.01, labels="Infrequent Voter", font=2)
-text(x=ratio*4, y=att[4]-0.01, labels="U35", font=2)
-text(x=ratio*5, y=att[5]-0.01, labels="35-65", font=2)
+text(x=ratio*4, y=att[4]-0.01, labels="U40", font=2)
+text(x=ratio*5, y=att[5]-0.01, labels="41-65", font=2)
 text(x=ratio*6, y=att[6]-0.01, labels="O65", font=2)
 text(x=ratio*7, y=att[7]+0.01, labels="White", font=2)
 text(x=ratio*8, y=att[8]+0.01, labels="Black", font=2)
