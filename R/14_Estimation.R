@@ -12,7 +12,7 @@ library(MatchIt)
 library(lmtest)
 library(sandwich)
 
-setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis/NM14Sample")
+setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis/NM16Sample")
 
 # CURRENTLY BASED ON IMPUTATINO "LOGIT" 8/10/2020
 
@@ -97,8 +97,15 @@ print(c(fname[i], round(est, d=4)))
 
 }
 
-lapply(att, function(x) round(x, d=3))
 
+mt <- data.frame(matrix(unlist(lapply(att, function(x) round(x, d=3))), 
+                        nrow=length(att), byrow=T))
+
+
+#write_csv(mt, "ATT_NM14.csv")
+write_csv(mt, "ATT_NM16.csv")
+#write_csv(mt, "ATT_NC14.csv")
+#write_csv(mt, "ATT_NC16.csv")
 
 ################################################################################################
 
