@@ -21,10 +21,10 @@ datCO <- dat %>% filter(Place==1)
 datNM <- dat %>% filter(Place==0)
 
 # TURNOUT BY STATE AND YEAR
-mean(datCO$Vote[datCO$Year==2012]) # CO 2012 (0.8300265)
-mean(datCO$Vote[datCO$Year==2016]) # CO 2016 (0.8127234)
-mean(datNM$Vote[datNM$Year==2012]) # NM 2012 (0.6934513)
-mean(datNM$Vote[datNM$Year==2016]) # NM 2016 (0.6190295)
+mean(datCO$Vote[datCO$Year==2012]) # CO 2012 (0.8280877)
+mean(datCO$Vote[datCO$Year==2016]) # CO 2016 (0.8190579)
+mean(datNM$Vote[datNM$Year==2012]) # NM 2012 (0.6974762)
+mean(datNM$Vote[datNM$Year==2016]) # NM 2016 (0.6411003)
 
 mean(!is.na(datCO$Vote[datCO$Year==2012])) # 1 OK
 mean(!is.na(datCO$Vote[datCO$Year==2016])) # 1 OK
