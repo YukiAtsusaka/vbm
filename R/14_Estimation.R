@@ -14,8 +14,6 @@ library(sandwich)
 
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis/NM16Sample")
 
-# CURRENTLY BASED ON IMPUTATINO "LOGIT" 8/10/2020
-
 att <- list()
 fname <- list.files(path = ".", pattern = "*.csv")
 
@@ -23,7 +21,7 @@ fname <- list.files(path = ".", pattern = "*.csv")
 for(i in 1:14){
 
 dat_s <- read_csv(fname[i], col_types = cols(VoterID = col_character()))
-dat_s16 <- dat_s %>% filter(Time==1) # GRAPH THE lATER YEAR ONLLY
+dat_s16 <- dat_s %>% filter(Time==1) # GRAB THE TREATMENT YEAR ONLY
 
 # CREATING COVARIATE MATRIX WITH DIFFERENT CONDITIONING VARIAVLES
 if(i==1){
@@ -41,7 +39,6 @@ variable_names2 <- c("voted2010","female", "age", "estrace")   # FOR PARTY SPLIT
 }
 
 #print(variable_names2) # CHECK
-
 
 X.16 <- dat_s16[, variable_names2] # COVARIATE MATRIX FOR TWO-YEAR DATA
 m.out16     <- matchit(f.build("Place", X.16), data=dat_s16, method="exact")
@@ -61,7 +58,6 @@ match.dat <- match.dat %>% left_join(w, by="VoterID")
 
 ################################################################################################
 # (3) ESTIMATE CATTs VIA DIFFERENCE-IN-DIFFERENCES WLS
-
 
 if(i==1){
 # ALL
@@ -102,6 +98,7 @@ mt <- data.frame(matrix(unlist(lapply(att, function(x) round(x, d=3))),
                         nrow=length(att), byrow=T))
 
 
+# CHANGE HERE DEPENDING ON YEAR AND STATE
 #write_csv(mt, "ATT_NM14.csv")
 write_csv(mt, "ATT_NM16.csv")
 #write_csv(mt, "ATT_NC14.csv")
