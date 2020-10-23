@@ -9,65 +9,63 @@
 ################################################################################################
 rm(list=ls())
 library(tidyverse)
-library(magrittr)
+
+setwd("data/NC16Sample")
+
+# ################################################################################################
+# # FOR THE POPULATION OF INTEREST (I)
+# dat <- read_csv("Stack_Colorado_NC_2012_2016.csv", col_types = cols(VoterID = col_character()))
+# dat <- dat %>% 
+#        mutate(being.white=ifelse(estrace=="White",1,0))
+# ################################################################################################
+
+setwd("data/Placebo")
+fname <- list.files(path = ".", pattern = "*.csv")
+nvec <- c("Voted2010", "White", "Black", "Hispanic", "Asian", "Female", "Democrat")
+tvec <- c("North Carolina 2012 + 2014",
+          "North Carolina 2012 + 2016",
+          "New Mexico 2012 + 2014",
+          "New Mexico 2012 + 2016")
+
+{pdf("Placebo_outcome.pdf", width=12, height=7)
+par(mar=c(1,3,3,1), mfrow=c(2,2))
 
 
+for(i in 1:4){
+dt <- read_csv(fname[i])
+  
+dt <- dt %>% 
+      mutate(being.white=ifelse(estrace=="White",1,0),
+             being.black=ifelse(estrace=="Black",1,0),
+             being.hisp=ifelse(estrace=="Hispanic",1,0),
+             being.asian=ifelse(estrace=="Asian",1,0))
 ################################################################################################
-# FOR THE POPULATION OF INTEREST (I)
 
-dat <- read_csv("Stack_Colorado_NC_2012_2016_Imputed.csv", col_types = cols(VoterID = col_character()))
-dat <- dat %>% 
-       filter(is.na(female)==F & is.na(democrat)==F & is.na(age)==F & is.na(estrace)==F) %>%
-       mutate(being.white=ifelse(estrace=="White",1,0))
-################################################################################################
+# OLS with FALSE OUTCOMES
+p1 <- summary(lm(voted2010 ~ Intervent +Time+Place+as.factor(estrace)+as.factor(democrat)+age, dt))$coef[2,1:2]
+p2 <- summary(lm(being.white ~ Intervent +Time+Place+voted2010+as.factor(democrat)+as.factor(female)+age, dt))$coef[2,1:2]
+p3 <- summary(lm(being.black ~ Intervent +Time+Place+voted2010+as.factor(democrat)+as.factor(female)+age, dt))$coef[2,1:2]
+p4 <- summary(lm(being.hisp ~ Intervent +Time+Place+voted2010+as.factor(democrat)+as.factor(female)+age, dt))$coef[2,1:2]
+p5 <- summary(lm(being.asian ~ Intervent +Time+Place+voted2010+as.factor(democrat)+as.factor(female)+age, dt))$coef[2,1:2]
+p6 <- summary(lm(female ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(democrat)+age, dt))$coef[2,1:2]
+p7 <- summary(lm(democrat ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+age, dt))$coef[2,1:2]
 
-################################################################################################
-# FOR THE POPULATION OF INTEREST (I) MATCHED
-dat2 <- read_csv("Stack_Colorado_NC_2012_2016_Sample.csv", col_types = cols(VoterID = col_character()))
-dat2 <- dat2 %>% 
-        filter(is.na(female)==F & is.na(democrat)==F & is.na(age)==F & is.na(estrace)==F) %>%
-        mutate(being.white=ifelse(estrace=="White",1,0))
-################################################################################################
+plc <- c(p1[1],p2[1],p3[1],p4[1],p5[1],p6[1],p7[1])
+se  <- c(p1[2],p2[2],p3[2],p4[2],p5[2],p6[2],p7[2])
 
 
-placebo1 <- summary(lm(female ~ Intervent +Time+Place+as.factor(estrace)+as.factor(democrat)+age, dat))$coef[2,1:2]
-placebo2 <- summary(lm(democrat ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+age, dat))$coef[2,1:2]
-placebo3 <- summary(lm(being.white ~ Intervent +Time+Place+as.factor(democrat)+as.factor(female)+age, dat))$coef[2,1:2]
-placebo4 <- summary(lm(female ~ Intervent +Time+Place+as.factor(estrace)+as.factor(democrat)+age, dat2))$coef[2,1:2]
-placebo5 <- summary(lm(democrat ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+age, dat2))$coef[2,1:2]
-placebo6 <- summary(lm(being.white ~ Intervent +Time+Place+as.factor(democrat)+as.factor(female)+age, dat2))$coef[2,1:2]
-
-
-
-y <- seq(from=-0.05, to=0.05, length=101)
-x <- seq(from=0, to=100, by=1)
-
-pdf("Placebo_outcome.pdf", width=8*0.75, height=7*0.75)
-par(mar=c(1,3,1,1))
-plot(y ~ x, type="n", xlab="", ylab="", xaxt="n")
-points(16*1, placebo1[1], pch=19)
-points(16*2, placebo2[1], pch=19)
-points(16*3, placebo3[1], pch=19)
-points(16*4, placebo4[1], pch=19)
-points(16*5, placebo5[1], pch=19)
-points(16*6, placebo6[1], pch=19)
-arrows(y0=placebo1[1]-1.96*placebo1[2], y1=placebo1[1]+1.96*placebo1[2], x0=16, x1=16, length=0, angle=0, col="red") # So small and cannot see
-arrows(y0=placebo2[1]-1.96*placebo2[2], y1=placebo2[1]+1.96*placebo2[2], x0=16*2, x1=16*2, length=0, angle=0, col="red")
-arrows(y0=placebo3[1]-1.96*placebo3[2], y1=placebo3[1]+1.96*placebo3[2], x0=16*3, x1=16*3, length=0, angle=0, col="red")
-arrows(y0=placebo4[1]-1.96*placebo4[2], y1=placebo4[1]+1.96*placebo4[2], x0=16*4, x1=16*4, length=0, angle=0, col="red") # So small and cannot see
-arrows(y0=placebo5[1]-1.96*placebo5[2], y1=placebo5[1]+1.96*placebo5[2], x0=16*5, x1=16*5, length=0, angle=0, col="red")
-arrows(y0=placebo6[1]-1.96*placebo6[2], y1=placebo6[1]+1.96*placebo6[2], x0=16*6, x1=16*6, length=0, angle=0, col="red")
+plot(0:8, 0:8, type="n", xlab="", ylab="", xaxt="n", ylim=c(-0.01,0.02))
+points(1:7, plc, pch=19)
+arrows(y0=plc-1.96*se, y1=plc+1.96*se, 
+       x0=1:7, x1=1:7, length=0, angle=0, col="firebrick4") # So small and cannot see
 abline(h=0, lty=2)
-text(x=16, y=-0.02, labels="Democrat") 
-text(x=16*2, y=-0.02, labels="Female") 
-text(x=16*3, y=-0.02, labels="White") 
-text(x=16*4, y=-0.02, labels="Democrat\n(Matched)") 
-text(x=16*5, y=-0.02, labels="Female\n(Matched)") 
-text(x=16*6, y=-0.02, labels="White\n(Mathced)") 
-text(x=28, y=0.04, labels="Placebo Tests with False Outcomes", cex=1.1)
+text(x=1:7, y=0.01, labels=nvec, cex=1.2) 
+title(tvec[i], cex.main=2)
+
+}
 
 dev.off()
-
+}  
 
 ################################################################################################
 # END OF THIS R SOURCE CODE
