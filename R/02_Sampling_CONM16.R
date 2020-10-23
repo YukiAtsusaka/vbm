@@ -8,11 +8,9 @@
 
 ##################################################s##############################################
 # (1) SIMPLE RANDOM SAMPLING
-
-setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
 rm(list=ls());gc();gc()
 library(tidyverse)
-
+setwd("data")
 dat <- read_csv("Stack_Colorado_NM_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 dat <- dat %>% dplyr::select(-n)
 
@@ -31,7 +29,7 @@ mean(!is.na(datCO$Vote[datCO$Year==2016])) # 1 OK
 mean(!is.na(datNM$Vote[datNM$Year==2012])) # 1 OK
 mean(!is.na(datNM$Vote[datNM$Year==2016])) # 1 OK
 
-
+setwd("NM16Sample")
 
 # SIMPLE RANDOM SAMPLING (All Voters) ==================================================#
 set.seed(1029501)

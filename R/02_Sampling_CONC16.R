@@ -10,9 +10,7 @@
 # (1) SIMPLE RANDOM SAMPLING
 rm(list=ls())
 library(tidyverse)
-
-# BELOW IS TEMPORALIRY 8/19/2020
-setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
+setwd("./data")
 
 dat <- read_csv("Stack_Colorado_NC_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 dat <- dat %>% dplyr::select(-n)
@@ -21,16 +19,19 @@ datCO <- dat %>% filter(Place==1)
 datNC <- dat %>% filter(Place==0)
 
 # TURNOUT BY STATE AND YEAR
-mean(datCO$Vote[datCO$Year==2012]) # CO 2012 (0.8300265)
-mean(datCO$Vote[datCO$Year==2016]) # CO 2016 (0.8127234)
-mean(datNC$Vote[datNC$Year==2012]) # NC 2012 (0.6944402)
-mean(datNC$Vote[datNC$Year==2016]) # NC 2016 (0.6180653)
+mean(datCO$Vote[datCO$Year==2012]) # CO 2012 (0.8280877)
+mean(datCO$Vote[datCO$Year==2016]) # CO 2016 (0.8190579)
+mean(datNC$Vote[datNC$Year==2012]) # NC 2012 (0.6961805)
+mean(datNC$Vote[datNC$Year==2016]) # NC 2016 (0.6288633)
 
 # COMPLETE CASES
 mean(!is.na(datCO$Vote[datCO$Year==2012])) # 1 OK
 mean(!is.na(datCO$Vote[datCO$Year==2016])) # 1 OK
 mean(!is.na(datNC$Vote[datNC$Year==2012])) # 1 OK
 mean(!is.na(datNC$Vote[datNC$Year==2016])) # 1 OK
+
+
+setwd("./NC16Sample")
 
 
 # SIMPLE RANDOM SAMPLING (All Voters) ==================================================#

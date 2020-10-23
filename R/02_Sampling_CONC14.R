@@ -14,10 +14,11 @@
 
 rm(list=ls());gc();gc()
 library(tidyverse)
-setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
+setwd("data")
 dat <- read_csv("Stack_Colorado_NC_2012_2014.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
 dat <- dat %>% dplyr::select(-n)
 dat$age[dat$Year==2014 & dat$State=="Colorado"] <- dat$age[dat$Year==2012 & dat$State=="Colorado"] + 2
+
 
 
 # OLD FILES NEEDED MISSING VALUE IMPUTATION
@@ -36,12 +37,12 @@ datCO <- dat %>% filter(Place==1)
 datNC <- dat %>% filter(Place==0)
 
 # TURNOUT BY STATE AND YEAR
-mean(datCO$voted2010) # CO 2010 (0.6698711)
-mean(datNC$voted2010) # NC 2010 (0.43495) 
-mean(datCO$Vote[datCO$Year==2012]) # CO 2012 (0.8300265)
-mean(datCO$Vote[datCO$Year==2014]) # CO 2014 (0.6893974) 
-mean(datNC$Vote[datNC$Year==2012]) # NC 2012 (0.6944402)
-mean(datNC$Vote[datNC$Year==2014]) # NC 2014 (0.4465458)
+mean(datCO$voted2010) # CO 2010 (0.6853199)
+mean(datNC$voted2010) # NC 2010 (0.4773989) 
+mean(datCO$Vote[datCO$Year==2012]) # CO 2012 (0.8280877)
+mean(datCO$Vote[datCO$Year==2014]) # CO 2014 (0.7035609) 
+mean(datNC$Vote[datNC$Year==2012]) # NC 2012 (0.6961805)
+mean(datNC$Vote[datNC$Year==2014]) # NC 2014 (0.4628315)
 
 # COMPLETE CASES
 mean(!is.na(datCO$Vote[datCO$Year==2012])) # 1 OK
@@ -49,6 +50,8 @@ mean(!is.na(datCO$Vote[datCO$Year==2014])) # 1 OK
 mean(!is.na(datNC$Vote[datNC$Year==2012])) # 1 OK
 mean(!is.na(datNC$Vote[datNC$Year==2014])) # 1 OK
 
+
+setwd("~/NC14Sample")
 
 
 # SIMPLE RANDOM SAMPLING (All Voters) ==================================================#

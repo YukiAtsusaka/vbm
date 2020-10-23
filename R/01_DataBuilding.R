@@ -10,25 +10,37 @@
 # (1) DATA ORGANIZATION
 # WE'LL CREATE PANEL DATA (NOT REPEATED CROSS-SECTIONAL)
 
+# 10/23/2020 THIS DATA IS FROM ANDREW
+#nc2010 <- read_dta("2010 NC Reg voters.dta") 
+#nc2010id <- nc2010 %>% mutate(VoterID=ncid) %>% dplyr::select(VoterID)
+#write_csv(nc2010id, "2010NCRegVotersID.csv")
+
 #+++++++++++++++++++++++++++++++++++++++++++++#
 # NORTH CAROLINA (CONTROL STATE)
 #+++++++++++++++++++++++++++++++++++++++++++++#
 # READING RAW DATA
 rm(list=ls())
 library(tidyverse)
+setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
+
 nc2012 <- read_csv("2012 North Carolina CSV.csv") 
 nc2016 <- read_csv("2016 North Carolina CSV.csv")
+nc2010 <- read_csv("2010NCRegVotersID.csv") %>% pull()
 
 # KEEP ONLY NECESSARY VARIABLES
 nc2012_sl <- nc2012 %>%
              select(ncid, female, age, democrat, estrace, voted2012, voted2010) %>%
              rename(Vote = voted2012, VoterID = ncid) %>%
+             filter(VoterID %in% nc2010) %>%
              mutate(Year = 2012)
 
 nc2016_sl <- nc2016 %>%
              select(ncid, female, age, democrat, estrace, voted2016, voted2012, voted2010) %>%
              rename(Vote = voted2016, VoterID = ncid) %>%
+             filter(VoterID %in% nc2010) %>%
              mutate(Year = 2016)
+
+rm(nc2012,nc2016,nc2010); gc(); gc()
 
 # STACK TWO YERAS
 nc12_16 <- union_all(nc2012_sl, nc2016_sl) %>%  # 8279011 + 7539082 (= 15818093)
@@ -36,7 +48,8 @@ nc12_16 <- union_all(nc2012_sl, nc2016_sl) %>%  # 8279011 + 7539082 (= 15818093)
            filter(is.na(Vote)==F) %>%
            filter(is.na(female)==F & is.na(democrat)==F & is.na(age)==F & is.na(estrace)==F) %>%
            add_count(VoterID) %>%               # Defining POI
-           filter(n==2)                         # ONLY KEEP VOTERS WHO ARE BOTH IN 2012 & 2016 (N=15078164) 
+           filter(n==2)                      # ONLY KEEP VOTERS WHO ARE BOTH IN 2012 & 2016 (N=15078164) 
+
 write_csv(nc12_16, "Stack_NC_2012_2016.csv")
 
 
