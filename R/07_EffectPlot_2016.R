@@ -10,11 +10,10 @@
 ################################################################################################
 # (1) NORTH CAROLINA CONTROLS
 ################################################################################################
-#setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis")
-
 library(tidyverse)
 library("ggsci")
 rm(list=ls())
+setwd("R")
 
 {pdf("CATTPlot_2016.pdf", width=10, height=7)
 par(mar=c(1,3,1,1), mfrow=c(2,1))
@@ -37,11 +36,10 @@ prop = c(1, 0.685, 0.315,                # All, frequent, infrequent
 
 prop <- sqrt(prop)
 
-# CATTs from Table D.1 on Online Appendix
-att <- c(0.065, 0.053, 0.099, 0.085, 0.046, 0.112, 
-         0.066, 0.070, 0.073, 0.063, 0.058, 0.075, 0.064, 0.062)
-se  <- c(0.003, 0.003, 0.003, 0.004, 0.003, 0.003, 
-         0.003, 0.003, 0.004, 0.003, 0.003, 0.003, 0.003, 0.003)
+
+est <- read_csv("ATT_NC16.csv")
+att <- est[,1] %>% pull()
+se <- est[,2] %>% pull()
 
 y <- seq(from=0.03, to=0.14, length=101)
 x <- seq(from=0, to=100, by=1)
@@ -100,7 +98,6 @@ text(x=ratio*14-1, y=att[14]+0.01, labels="Non-Dem", font=2)
 est <- read_csv("ATT_NM16.csv")
 att <- est[,1] %>% pull()
 se <- est[,2] %>% pull()
-
 
 # y <- seq(from=0, to=0.12, length=101)
 # x <- seq(from=0, to=100, by=1)

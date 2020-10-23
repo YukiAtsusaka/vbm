@@ -14,6 +14,7 @@
 library(tidyverse)
 library("ggsci")
 rm(list=ls())
+setwd("R")
 
 {pdf("CATTPlot_2014.pdf", width=10, height=7)
 par(mar=c(1,3,1,1), mfrow=c(2,1))
@@ -38,10 +39,12 @@ prop = c(1, 0.685, 0.315,                # All, frequent, infrequent
 
 prop <- sqrt(prop)
 
-att <- c(0.102, 0.095, 0.105, 0.096, 0.091, 0.119, 
-         0.097, 0.090, 0.120, 0.123, 0.096, 0.101, 0.079, 0.107)
-se  <- c(0.004, 0.003, 0.002, 0.004, 0.003, 0.003, 
-         0.003, 0.003, 0.004, 0.003, 0.004, 0.004, 0.004, 0.004)
+
+est <- read_csv("ATT_NC14.csv")
+att <- est[,1] %>% pull()
+se <- est[,2] %>% pull()
+
+
 
 y <- seq(from=0.03, to=0.14, length=101)
 x <- seq(from=0, to=100, by=1)
