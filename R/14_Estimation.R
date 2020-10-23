@@ -12,7 +12,10 @@ library(MatchIt)
 library(lmtest)
 library(sandwich)
 
-setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/VBM_analysis/NM16Sample")
+#setwd("data/NC14Sample")
+#setwd("data/NC16Sample")
+#setwd("data/NM14Sample")
+setwd("data/NM16Sample")
 
 att <- list()
 fname <- list.files(path = ".", pattern = "*.csv")
@@ -86,7 +89,8 @@ m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(demo
 m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+age, match.dat, weights=weights)
 }
 
-est <- coeftest(m, vcov = vcovHC(m, type="HC3"))[2,1:2]
+# Individual-Level Clustered SE
+est <- coeftest(m, vcov = vcovHC(m,  cluster= ~ VoterID))[2,1:2]
 
 att[[i]] <- est
 print(c(fname[i], round(est, d=4)))
@@ -98,11 +102,13 @@ mt <- data.frame(matrix(unlist(lapply(att, function(x) round(x, d=3))),
                         nrow=length(att), byrow=T))
 
 
+setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/vbm/R")
+
 # CHANGE HERE DEPENDING ON YEAR AND STATE
-#write_csv(mt, "ATT_NM14.csv")
-write_csv(mt, "ATT_NM16.csv")
 #write_csv(mt, "ATT_NC14.csv")
 #write_csv(mt, "ATT_NC16.csv")
+#write_csv(mt, "ATT_NM14.csv")
+write_csv(mt, "ATT_NM16.csv")
 
 ################################################################################################
 
