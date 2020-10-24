@@ -13,9 +13,9 @@ library(lmtest)
 library(sandwich)
 
 #setwd("data/NC14Sample")
-#setwd("data/NC16Sample")
+setwd("data/NC16Sample")
 #setwd("data/NM14Sample")
-setwd("data/NM16Sample")
+#setwd("data/NM16Sample")
 
 att <- list()
 fname <- list.files(path = ".", pattern = "*.csv")
@@ -106,9 +106,9 @@ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/vbm/R")
 
 # CHANGE HERE DEPENDING ON YEAR AND STATE
 #write_csv(mt, "ATT_NC14.csv")
-#write_csv(mt, "ATT_NC16.csv")
+write_csv(mt, "ATT_NC16.csv")
 #write_csv(mt, "ATT_NM14.csv")
-write_csv(mt, "ATT_NM16.csv")
+#write_csv(mt, "ATT_NM16.csv")
 
 ################################################################################################
 

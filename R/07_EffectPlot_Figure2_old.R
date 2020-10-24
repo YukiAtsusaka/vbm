@@ -24,7 +24,7 @@ nm16 <- est[,1] %>% pull(); nm16se <- est[,2] %>% pull()
 
 
 
-{pdf("CATTPlot_Figure2.pdf", width=6, height=5)
+{pdf("CATTPlot_Figure3.pdf", width=6, height=5)
 par(mar=c(2,2,1,0.5), oma = c(0,3,2,0) + 0.1, mfrow=c(2,2))
 
 cs=1.5

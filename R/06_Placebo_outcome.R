@@ -7,17 +7,8 @@
 ################################################################################################
 
 ################################################################################################
-rm(list=ls())
+rm(list=ls());gc();gc()
 library(tidyverse)
-
-setwd("data/NC16Sample")
-
-# ################################################################################################
-# # FOR THE POPULATION OF INTEREST (I)
-# dat <- read_csv("Stack_Colorado_NC_2012_2016.csv", col_types = cols(VoterID = col_character()))
-# dat <- dat %>% 
-#        mutate(being.white=ifelse(estrace=="White",1,0))
-# ################################################################################################
 
 setwd("data/Placebo")
 fname <- list.files(path = ".", pattern = "*.csv")
