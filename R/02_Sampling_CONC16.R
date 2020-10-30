@@ -13,7 +13,6 @@ library(tidyverse)
 setwd("./data")
 
 dat <- read_csv("Stack_Colorado_NC_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
-
 datCO <- dat %>% filter(Place==1)
 datNC <- dat %>% filter(Place==0) # 10870184 
 
@@ -22,7 +21,7 @@ dt <- datNC %>% group_by(VoterID) %>%
       ungroup()
 id <- dt %>% filter(voted2010!=1 & female!=1 & democrat !=1 ) %>%
       dplyr::select(VoterID) %>% pull()
-datNC <- datNC %>% filter(VoterID %in% id)
+datNC <- datNC %>% filter(VoterID %in% id) # 10496246 
 
 
 # TURNOUT BY STATE AND YEAR
@@ -30,7 +29,7 @@ mean(datCO$voted2010) # CO 2010 (0.6853199)
 mean(datNC$voted2010) # NC 2010 (0.4787708) 
 mean(datCO$Vote[datCO$Year==2012]) # CO 2012 (0.8280877)
 mean(datCO$Vote[datCO$Year==2016]) # CO 2016 (0.8190579)
-mean(datNC$Vote[datNC$Year==2012]) # NC 2012 (0.6961805)
+mean(datNC$Vote[datNC$Year==2012]) # NC 2012 (0.6939296)
 mean(datNC$Vote[datNC$Year==2016]) # NC 2016 (0.6236273)
 
 # COMPLETE CASES
@@ -47,12 +46,12 @@ setwd("./NC16Sample")
 set.seed(1029501)
 sample_CO <- datCO %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
              sample(size=round(0.01*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
-datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID)
+datCO.s <- datCO %>% filter(VoterID %in% sample_CO) %>% arrange(VoterID) # 81566
 
 set.seed(1029501)
 sample_NC <- datNC %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
              sample(size=round(0.01*dim(datNC)[1]), replace=F)   # SAMPLE 1% = 24178
-datNC.s <- datNC %>% filter(VoterID %in% sample_NC) %>% arrange(VoterID)
+datNC.s <- datNC %>% filter(VoterID %in% sample_NC) %>% arrange(VoterID) # 209924
 
 dat_samp <- union_all(datCO.s, datNC.s) # Stack two states again
 write_csv(dat_samp, "1_NC2016_Sample.csv")

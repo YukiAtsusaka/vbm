@@ -13,9 +13,9 @@ library(lmtest)
 library(sandwich)
 
 #setwd("data/NC14Sample")
-setwd("data/NC16Sample")
+#setwd("data/NC16Sample")
 #setwd("data/NM14Sample")
-#setwd("data/NM16Sample")
+setwd("data/NM16Sample")
 
 att <- list()
 fname <- list.files(path = ".", pattern = "*.csv")
@@ -32,7 +32,7 @@ variable_names2 <- c("voted2010", "female", "age", "estrace", "democrat")   # AL
 }else if(i %in% 2:3){
 variable_names2 <- c("female", "age", "estrace", "democrat")   # FOR FREQUENT VOTER DATA
 }else if(i %in% 4:6){
-variable_names2 <- c("voted2010","female", "estrace", "democrat")   # FOR AGE SPLIT DATA + ALL DATA
+variable_names2 <- c("voted2010","female", "age", "estrace", "democrat")   # FOR AGE SPLIT DATA + ALL DATA
 }else if(i %in% 7:10){
 variable_names2 <- c("voted2010", "female", "age", "democrat") # FOR RACE SPLIT DATA
 }else if(i %in% 11:12){
@@ -64,29 +64,29 @@ match.dat <- match.dat %>% left_join(w, by="VoterID")
 
 if(i==1){
 # ALL
-m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age,match.dat, weights=weights)
+m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+female+democrat+age+I(age^2),match.dat, weights=weights)
 
 }else if(i %in% 2:3){
 # Frequent and Infrequent
-m <- lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights)
+m <- lm(Vote ~ Intervent +Time+Place+as.factor(estrace)+female+democrat+age+I(age^2), match.dat, weights=weights)
 
 }else if(i %in% 4:6){
 # Age Low, Mid, High
-m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+as.factor(democrat), match.dat, weights=weights)
+m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+female+democrat+age+I(age^2), match.dat, weights=weights)
 
 
 }else if(i %in% 7:10){
 # White, Black, Hispanic, Asian
-m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(female)+as.factor(democrat)+age, match.dat, weights=weights)
+m <- lm(Vote ~ Intervent +Time+Place+voted2010+female+democrat+age+I(age^2), match.dat, weights=weights)
   
 }else if(i %in% 11:12){
 # Male, Female
-m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(democrat)+age, match.dat, weights=weights)
+m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+democrat+age+I(age^2), match.dat, weights=weights)
   
   
 }else{
 # Dem, non-Dem
-m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+as.factor(female)+age, match.dat, weights=weights)
+m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+female+age+I(age^2), match.dat, weights=weights)
 }
 
 # Individual-Level Clustered SE
@@ -106,13 +106,12 @@ setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/vbm/R")
 
 # CHANGE HERE DEPENDING ON YEAR AND STATE
 #write_csv(mt, "ATT_NC14.csv")
-write_csv(mt, "ATT_NC16.csv")
+#write_csv(mt, "ATT_NC16.csv")
 #write_csv(mt, "ATT_NM14.csv")
-#write_csv(mt, "ATT_NM16.csv")
+write_csv(mt, "ATT_NM16.csv")
 
 ################################################################################################
 
 ################################################################################################
 # END OF THIS R SOURCE CODE
 ################################################################################################
-  

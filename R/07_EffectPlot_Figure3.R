@@ -33,7 +33,7 @@ col <- "black"
 col2 <- "gray60"
 y <- seq(from=0, to=0.14, length=101)
 x <- seq(from=0, to=1, length=101)
-
+tau.pos <- 0.122
 
 ################################################################################################
 # NORTH CAROLINA CONTROL
@@ -58,6 +58,10 @@ arrows(y0=catt[5]-1.96*se[5], y1=catt[5]+1.96*se[5], x0=0.75, x1=0.75, length=0,
 points(0.75, catt[5], pch=6, cex=cs)
 arrows(y0=catt[6]-1.96*se[6], y1=catt[6]+1.96*se[6], x0=0.85, x1=0.85, length=0, angle=0, col=col, lwd=ls)
 points(0.85, catt[6], pch=17, cex=cs)
+text(0.25, tau.pos, labels=expression(tau[11]), col=col2)
+text(0.35, tau.pos, labels=expression(tau[12]), col=col2)
+text(0.75, tau.pos, labels=expression(tau[21]), col=col2)
+text(0.85, tau.pos, labels=expression(tau[22]), col=col2)
 
 axis(1, at = seq(0.25, 1, by = 1), las=1, labels="2014",cex.axis=1, mgp=c(0,0.8,0))
 axis(1, at = seq(0.75, 1, by = 1), las=1, labels="2016" ,cex.axis=1,  mgp=c(0,0.8,0))
@@ -91,6 +95,11 @@ arrows(y0=catt[5]-1.96*se[5], y1=catt[5]+1.96*se[5], x0=0.75, x1=0.75, length=0,
 points(0.75, catt[5], pch=6, cex=cs)
 arrows(y0=catt[6]-1.96*se[6], y1=catt[6]+1.96*se[6], x0=0.85, x1=0.85, length=0, angle=0, col=col, lwd=ls)
 points(0.85, catt[6], pch=17, cex=cs)
+text(0.25, tau.pos, labels=expression(tau[11]), col=col2, font=2)
+text(0.35, tau.pos, labels=expression(tau[12]), col=col2, font=2)
+text(0.75, tau.pos, labels=expression(tau[21]), col=col2, font=2)
+text(0.85, tau.pos, labels=expression(tau[22]), col=col2, font=2)
+
 
 axis(1, at = seq(0.25, 1, by = 1), las=1, labels="2014",cex.axis=1, mgp=c(0,0.8,0))
 axis(1, at = seq(0.75, 1, by = 1), las=1, labels="2016" ,cex.axis=1,  mgp=c(0,0.8,0))
