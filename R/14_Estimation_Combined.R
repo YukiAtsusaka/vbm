@@ -12,18 +12,19 @@ library(MatchIt)
 library(lmtest)
 library(sandwich)
 
-#setwd("data/NC14Sample")
-#setwd("data/NC16Sample")
-#setwd("data/NM14Sample")
-setwd("data/NM16Sample")
+fnameNC <- list.files(path = "data/NC16Sample", pattern = "*.csv")
+fnameNM <- list.files(path = "data/NM16Sample", pattern = "*.csv")
 
+setwd("data/2016Sample")
 att <- list()
-fname <- list.files(path = ".", pattern = "*.csv")
-
 
 for(i in 1:14){
 
-dat_s <- read_csv(fname[i], col_types = cols(VoterID = col_character()))
+dat_nc <- read_csv(fnameNC[i], col_types = cols(VoterID = col_character())) %>%
+          dplyr::select(-n)
+dat_nm <- read_csv(fnameNM[i], col_types = cols(VoterID = col_character()))
+dat_s <- union(dat_nc, dat_nm) # COMBINE
+
 dat_s16 <- dat_s %>% filter(Time==1) # GRAB THE TREATMENT YEAR ONLY
 
 # CREATING COVARIATE MATRIX WITH DIFFERENT CONDITIONING VARIAVLES
@@ -53,8 +54,8 @@ match.dat <- dat_s %>% filter(VoterID %in% match.16ID) # MATCHED TWO-YEAR DATA
 match.dat <- match.dat %>% left_join(w, by="VoterID")
 
 # COVARIATE BALANCE
-love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), threshold = .1)
-# Save by Porrail (7.00 x 4.00)
+#love.plot(m.out16, binary = "std", stats = c("mean.diffs", "ks.statistics"), threshold = .1)
+# Save by Porrail (8.00 x 5.00)
 ################################################################################################
 
 
@@ -93,7 +94,7 @@ m <- lm(Vote ~ Intervent +Time+Place+voted2010+as.factor(estrace)+female+age+I(a
 est <- coeftest(m, vcov = vcovHC(m,  cluster= ~ VoterID))[2,1:2]
 
 att[[i]] <- est
-print(c(fname[i], round(est, d=4)))
+print(c(i, round(est, d=4)))
 
 }
 
@@ -105,10 +106,10 @@ mt <- data.frame(matrix(unlist(lapply(att, function(x) round(x, d=3))),
 setwd("C:/Users/YUKI/Box/FromLaptop/Project/03_ColoradoVBM_BOB/vbm/R")
 
 # CHANGE HERE DEPENDING ON YEAR AND STATE
-#write_csv(mt, "ATT_NC14.csv")
-#write_csv(mt, "ATT_NC16.csv")
-#write_csv(mt, "ATT_NM14.csv")
-write_csv(mt, "ATT_NM16.csv")
+#write_csv(mt, "ATT_2014_Combined.csv")
+write_csv(mt, "ATT_2016_Combined.csv")
+
+
 
 ################################################################################################
 

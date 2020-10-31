@@ -13,6 +13,7 @@ library(tidyverse)
 setwd("./data")
 
 dat <- read_csv("Stack_Colorado_NC_2012_2016.csv", col_types = cols(VoterID = col_character())) # PRIMARY POPULATION OF INTEREST
+dat <- dat %>% dplyr::select(-n)
 datCO <- dat %>% filter(Place==1)
 datNC <- dat %>% filter(Place==0) # 10870184 
 
@@ -42,7 +43,7 @@ mean(!is.na(datNC$Vote[datNC$Year==2016])) # 1 OK
 setwd("./NC16Sample")
 
 
-# SIMPLE RANDOM SAMPLING (All Voters) ==================================================#
+# SIMPLE RANDOM SAMPLING (All Voters) s==================================================#
 set.seed(1029501)
 sample_CO <- datCO %>% dplyr::select(VoterID) %>% distinct(VoterID) %>% pull() %>%
              sample(size=round(0.01*dim(datCO)[1]), replace=F)   # SAMPLE 1% = 8988
