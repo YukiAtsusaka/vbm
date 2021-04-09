@@ -78,10 +78,18 @@ write_csv(nc12_16, "Stack_NC_2012_2016.csv")
 #              distinct(voter_id, .keep_all=T)     # 3778507      # Drop duplicates [A LOT, needs check]
 #write_csv(sup_co2016, "co2016_sup.csv")
 
- # co2010 <- read_dta("2010 Reg Co Voters and Vote History.dta")
+ #co2010 <- read_dta("2010 Reg Co Voters and Vote History.dta")
  # voted2010 <- co2010 %>% mutate(VoterID=voted_id6) %>%
  #              dplyr::select(VoterID, voted2010)
  # write_csv(voted2010, "Colorado2010_turnout.csv")
+
+# USING BOB'S FILE THAT CAME 2/24/2021 via RICE EMAIL
+# coCounty <- read_dta("Colo Voters Reg 2012_2016 with ID county.dta")
+# county <- coCounty %>% 
+#           filter(data_year%in% c(2012,2014,2016)) %>%  
+#           dplyr::select(voter_id, county_fips)
+# 
+# write_csv(county, "COVoterIDCountyFips.csv")
 
 
 rm(list=ls()); gc(); gc()
@@ -94,6 +102,19 @@ co2012 <- read_csv("co2012.csv")         # VOTER FILE 2012
 co2016 <- read_csv("co2016.csv")         # VOTER FILE 2016
 sup_co2012 <- read_csv("co2012_sup.csv") # ESTIMATED RACE 2012
 sup_co2016 <- read_csv("co2016_sup.csv") # ESTIMATED RACE 2016
+countyfips <-  read_csv("COVoterIDCountyFips.csv") 
+
+# comp <- read_dta("NMCONCPresidVotebyYearCounty.dta")
+# comp <- comp %>% 
+#         filter(year%in% c(2010,2012,2014,2016)) %>%
+#         mutate(county_fips = FIPS,
+#                party = ifelse(is.na(party),"other", party),
+#                share = as.numeric(candidatevotes)/as.numeric(totalvotes)*100) %>%
+#         dplyr::select(year, state, county_fips, party, share) %>%
+#         spread(key="party", value="share") %>%
+#         mutate(party_comp = abs(democrat - republican))
+
+
 
 # Merge with estimated race and ethnicity
 co2012_sl <- co2012 %>%             # 3738665 obs

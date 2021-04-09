@@ -74,7 +74,7 @@ for(i in 2:14){ arrows(y0=att[i]-1.96*se[i], y1=att[i]+1.96*se[i],
                        x0=ratio*i, x1=ratio*i, length=0, angle=0, col=cole, lwd=4)}
 for(i in 2:14){ points(ratio*i, att[i], pch=1, cex=4*prop[i], col="navy") }
 
-text(x=ratio*2.2,y=0.135, labels="North Carolina as Control", font=2, cex=1.5)
+text(x=ratio*2.7,y=0.135, labels="North Carolina as Control (2016)", font=2, cex=1.5)
 text(x=ratio*0.5,y=att[1]+0.01, labels="All Voter", font=2)
 text(x=ratio*2, y=att[2]-0.01, labels="Frequent Voter", font=2)
 text(x=ratio*3, y=att[3]+0.01, labels="Infrequent Voter", font=2)
@@ -132,7 +132,7 @@ for(i in 2:14){ arrows(y0=att[i]-1.96*se[i], y1=att[i]+1.96*se[i],
                        x0=ratio*i, x1=ratio*i, length=0, angle=0, col=cole, lwd=4)}
 for(i in 2:14){ points(ratio*i, att[i], pch=1, cex=4*prop[i], col="navy") }
 
-text(x=ratio*2,y=0.135, labels="New Mexico as Control", font=2, cex=1.5)
+text(x=ratio*2.5,y=0.135, labels="New Mexico as Control (2016)", font=2, cex=1.5)
 text(x=ratio*0.5,y=att[1]+0.01, labels="All Voter", font=2)
 text(x=ratio*2, y=att[2]-0.01, labels="Frequent Voter", font=2)
 text(x=ratio*3, y=att[3]-0.01, labels="Infrequent Voter", font=2)
